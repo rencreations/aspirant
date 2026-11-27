@@ -3,14 +3,14 @@
 // play's state and the page, for a few seconds. The way in must start by itself and play (its value
 // rises over about two seconds), not land on its rest in one frame.
 //
-// Usage: node scripts/qa/home/voices-white.cjs <base> [stopAt=30.98] [px=60] [gap=40]
+// Usage: node scripts/qa/home/voices-white.cjs <base> [stopAt=30.80] [px=60] [gap=40]
 const path = require("node:path");
 const { createRequire } = require("node:module");
 const req = createRequire(path.resolve(__dirname, "../../../apps/web/package.json"));
 const { chromium } = req("@playwright/test");
 
 (async () => {
-  const [base, stopArg = "30.98", pxArg = "60", gapArg = "40"] = process.argv.slice(2);
+  const [base, stopArg = "30.80", pxArg = "60", gapArg = "40"] = process.argv.slice(2);
   const stopAt = Number(stopArg);
   const browser = await chromium.launch({
     channel: "chrome",

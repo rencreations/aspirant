@@ -252,7 +252,7 @@ export function buildCompanions(file: Object3D, scene: Scene): Companions {
     warm: (renderer, camera) => {
       for (const b of built) b.actor.visible = true;
       try {
-        renderer.compile(scene, camera);
+        void renderer.compileAsync(scene, camera).catch(() => undefined);
         for (const t of textures) renderer.initTexture(t);
       } finally {
         for (const b of built) b.actor.visible = false;

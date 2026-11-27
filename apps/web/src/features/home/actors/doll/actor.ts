@@ -2,7 +2,7 @@
  * The Obsidia doll: a plain class, no React. She is the skinned doll of `doll.glb` drawn in the
  * home's shared cast pass in the toon look (cel bands, an ink line, a rim, hard hair glints: the
  * shared system in `actors/shared/toon.ts`, three parts: cloth, skin, hair), 60 percent of the height
- * a section asks for (`DOLL_SIZE`), with a face that is drawn by a shader (24 expressions, a blend between
+ * a section asks for (`DOLL_SIZE`), with a face that is drawn by a shader (26 expressions, a blend between
  * any two, an automatic blink, eyes that look, a mouth that talks), poses authored as turns about
  * the model's axes with a procedural layer on top (flail, run lean, breath, a head on a spring,
  * squash and stretch), a baked walk that can be scrubbed by distance, sockets for other actors,
@@ -314,6 +314,12 @@ export class DollActor implements Actor {
   };
   private autoBlinkOn = true;
   private lookAt: { x: number; y: number } | null = null;
+  /** A turn of the head a section asks for this frame (radians), on top of its springs. */
+  private readonly headAsk = { roll: 0, nod: 0, turn: 0 };
+  /** Where a section points her eyes this frame, in the face's own units, when `gazeOn`. */
+  private gazeOn = false;
+  private gazeX = 0;
+  private gazeY = 0;
   private hovered = false;
 
   // Interaction.
@@ -610,6 +616,10 @@ export class DollActor implements Actor {
     this.hangW = 0;
     this.talkAmount = 0;
     this.lookAt = null;
+    this.headAsk.roll = 0;
+    this.headAsk.nod = 0;
+    this.headAsk.turn = 0;
+    this.gazeOn = false;
     this.fall.target = 0;
     this.landT = 0;
     this.standT = 0;
@@ -679,6 +689,28 @@ export class DollActor implements Actor {
   /** Look at a point of the stage (pixels, origin at the middle, y up), or at nothing with null. */
   look(point: { x: number; y: number } | null): void {
     this.lookAt = point;
+  }
+
+  /**
+   * Turn her head this frame, on top of its springs (radians): `roll` in the plane of the face, `nod`
+   * down, `turn` to her left (the screen's right while she faces it). For one frame: a section asks
+   * again every frame it wants it, so a scroll can scrub it.
+   */
+  headTurn(roll: number, nod = 0, turn = 0): void {
+    this.headAsk.roll = roll;
+    this.headAsk.nod = nod;
+    this.headAsk.turn = turn;
+  }
+
+  /**
+   * Point her eyes this frame in the face's own units (-1 to 1, x to the screen's right while she
+   * faces it, y up), whatever `look` says. For a doll drawn through a camera of its own (Selena's
+   * film), where a point of the stage means nothing. The eyes still ease there. For one frame.
+   */
+  gaze(x: number, y: number): void {
+    this.gazeOn = true;
+    this.gazeX = clamp(x, -1, 1);
+    this.gazeY = clamp(y, -1, 1);
   }
 
   // ---------------------------------------------------------------------------------------------
@@ -790,8 +822,11 @@ export class DollActor implements Actor {
    * seat; the rider adds its own slide on top. `reset()` and `place()` do not touch the ride.
    */
   rideOn(seat: Object3D, opts: RideOptions = {}): void {
+    // Drawn a moment ago (a section handed her back to the seat): the ride pose comes in over her
+    // own clock, so the pose she showed does not pop. Seated from nothing, she simply sits.
+    const shown = this.root.visible && performance.now() - this.updatedAt < 150;
     this.attach(seat, { keepWorld: false });
-    this.rider.start(seat, opts);
+    this.rider.start(seat, { blendIn: shown, ...opts });
     this.faceTo("smile", 0.2);
   }
 
@@ -866,7 +901,9 @@ export class DollActor implements Actor {
     // `compile` takes only what is visible.
     this.root.visible = true;
     try {
-      renderer.compile(this.cast.pass.scene, this.cast.pass.camera);
+      void renderer
+        .compileAsync(this.cast.pass.scene, this.cast.pass.camera)
+        .catch(() => undefined);
     } catch {
       // A lost context compiles on the first draw instead: nothing to do.
     } finally {
@@ -941,6 +978,11 @@ export class DollActor implements Actor {
     this.updateInk();
     this.updateFace(frame, r.face, dt);
     this.faceSetThisFrame = false;
+    // The head turn and the gaze a section asks for last one frame.
+    this.headAsk.roll = 0;
+    this.headAsk.nod = 0;
+    this.headAsk.turn = 0;
+    this.gazeOn = false;
     this.cacheHit();
 
     const ms = performance.now() - t0;
@@ -1021,7 +1063,8 @@ export class DollActor implements Actor {
     if (!a || !b) return;
     blendPoseData(this.work, a, b, this.poseW);
     // A rider sits in her own pose (it fades out over RELEASE_FADE after `release`).
-    if (this.rider.fade > 0) blendPoseData(this.work, this.work, this.ridePose, this.rider.fade);
+    const ride = this.rider.fade * this.rider.poseIn;
+    if (ride > 0) blendPoseData(this.work, this.work, this.ridePose, ride);
     const hang = this.poses.get("hang");
     if (this.hangW > 0 && hang) blendPoseData(this.work, this.work, hang, this.hangW);
     if (this.walkWeight > 0 && this.walkSampler) {
@@ -1041,9 +1084,9 @@ export class DollActor implements Actor {
     // The head: its spring, the look and a dizzy wobble.
     addHead(
       this.turns,
-      this.headRoll.x + wobble * 0.5,
-      this.headNod.x + this.lookNodSpring.x,
-      this.lookTurn.x,
+      this.headRoll.x + wobble * 0.5 + this.headAsk.roll,
+      this.headNod.x + this.lookNodSpring.x + this.headAsk.nod,
+      this.lookTurn.x + this.headAsk.turn,
     );
     applyTurns(this.bind, this.work.q, this.turns);
     stretchArm(this.work.scale, BONE.armL, BONE.handL, 1 + 0.6 * this.stretchL);
@@ -1173,8 +1216,11 @@ export class DollActor implements Actor {
     this.squashNode.scale.set(1 / Math.sqrt(1 + sq), 1 + sq, 1 / Math.sqrt(1 + sq));
 
     this.root.rotation.set(this.ppitch, this.pyaw + spin, roll);
-    // A rider keeps her head up while the dragon pitches (`ride.ts`).
-    if (this.rider.fade > 0) this.root.quaternion.premultiply(this.rider.counter);
+    // A rider keeps her head up while the dragon pitches (`ride.ts`). Off the seat the turn means
+    // nothing: it was about the seat's axes, and whoever took her sets her whole turn.
+    if (this.rider.seated && this.rider.fade > 0) {
+      this.root.quaternion.premultiply(this.rider.counter);
+    }
     const drawn = drawnHeight(this.pheight);
     const lift = hop * HOP_SHARE * drawn;
     if (this.worldHeight > 0 && this.attachedTo) {
@@ -1255,6 +1301,10 @@ export class DollActor implements Actor {
       const s = Math.sin(-this.root.rotation.z);
       lx = clamp((dx * c - dy * s) / range, -1, 1);
       ly = clamp((dx * s + dy * c) / range, -1, 1);
+    }
+    if (this.gazeOn) {
+      lx = this.gazeX;
+      ly = this.gazeY;
     }
     this.lookX.step(lx, dt);
     this.lookY.step(ly, dt);

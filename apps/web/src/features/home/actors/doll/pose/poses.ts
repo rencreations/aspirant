@@ -19,6 +19,10 @@ export const POSE_NAMES = [
   "run",
   "held",
   "reach",
+  "puzzle",
+  "cower",
+  "startle",
+  "hop",
 ] as const;
 
 export type PoseName = (typeof POSE_NAMES)[number];
@@ -115,5 +119,59 @@ export const POSES: Readonly<Record<PoseName, PoseDef>> = {
       Spine02: [-6, 0, 0],
     },
     scales: { LeftArm: [1, 1.6, 1], LeftHand: [1, 0.625, 1] },
+  },
+  puzzle: {
+    turns: {
+      RightArm: [-78, 0, -12],
+      RightForeArm: [-122, 0, 0],
+      LeftArm: [-10, 0, 52],
+      LeftForeArm: [-95, 0, 0],
+      Spine02: [0, 0, -5],
+      Head: [0, 0, 12],
+    },
+  },
+  cower: {
+    turns: {
+      Spine02: [14, 0, 0],
+      Spine: [6, 0, 0],
+      Head: [10, 0, 0],
+      LeftArm: [-100, 0, -20],
+      RightArm: [-100, 0, 20],
+      LeftForeArm: [-112, 0, 0],
+      RightForeArm: [-112, 0, 0],
+      LeftUpLeg: [-32, 0, 10],
+      RightUpLeg: [-32, 0, -10],
+      LeftLeg: [58, 0, 0],
+      RightLeg: [58, 0, 0],
+    },
+    hips: [0, -0.06, 0],
+  },
+  startle: {
+    turns: {
+      Spine02: [-12, 0, 0],
+      Head: [-14, 0, 0],
+      LeftArm: [-55, 0, 70],
+      RightArm: [-55, 0, -70],
+      LeftForeArm: [-20, 0, 0],
+      RightForeArm: [-20, 0, 0],
+      LeftUpLeg: [-12, 0, 18],
+      RightUpLeg: [-12, 0, -18],
+      LeftLeg: [22, 0, 0],
+      RightLeg: [22, 0, 0],
+    },
+  },
+  hop: {
+    turns: {
+      Spine02: [-6, 0, 0],
+      Head: [-8, 0, 0],
+      LeftArm: [-40, 0, 72],
+      RightArm: [-40, 0, -72],
+      LeftForeArm: [-15, 0, 0],
+      RightForeArm: [-15, 0, 0],
+      LeftUpLeg: [-70, 0, 12],
+      RightUpLeg: [-70, 0, -12],
+      LeftLeg: [95, 0, 0],
+      RightLeg: [95, 0, 0],
+    },
   },
 };

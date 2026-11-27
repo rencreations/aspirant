@@ -224,8 +224,13 @@
 
 .fig[data-active="1"],
 .fig img[data-size="small"],
-.fig img[data-ready="1"] {
+.fig img[data-ready] {
   opacity: 1;
+}
+
+/* The large picture decoded while the art was not on the screen: it is there when the art comes in. */
+.fig img[data-ready="now"] {
+  transition: none;
 }
 
 .picker {

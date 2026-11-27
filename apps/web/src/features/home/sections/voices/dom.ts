@@ -7,6 +7,7 @@
  */
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 import { asset } from "@/lib/asset";
+import { imageItem, runPreload } from "@/lib/preload";
 
 import { emergeAt, leaveAt, rowLook } from "./choreo";
 
@@ -31,6 +32,11 @@ export class VoicesDom {
   readonly listening: HTMLElement | null;
   private readonly picker: HTMLDialogElement | null;
   private readonly large = new Set<number>();
+  /** The Aspirants whose art is ready to show: the large picture decoded (or gone for good). */
+  private readonly settled = new Set<number>();
+  /** The art was on the screen in the last frame written (its opacity above 0). */
+  private artSeen = false;
+  private disposed = false;
   private current = 0;
   private readonly look = { opacity: 0, lift: 0 };
 
@@ -72,6 +78,14 @@ export class VoicesDom {
   /** The line buttons of the Aspirant that is shown. */
   activeRows(): readonly HTMLElement[] {
     return this.rows[this.current] ?? [];
+  }
+
+  /**
+   * The art of the Aspirant that is shown can be drawn at once: her large picture has arrived and is
+   * decoded. The way in waits for it (the runtime's ready gate), so the picture opens with the words.
+   */
+  artReady(): boolean {
+    return this.settled.has(this.current);
   }
 
   /** Show another Aspirant: the tab, the panel and the art. No handler is called. */
@@ -149,7 +163,9 @@ export class VoicesDom {
     if (this.artFrame) {
       const e = emergeAt(local, 0.4);
       const slide = (1 - e) * 0.1 * viewportW + leave * 0.12 * viewportW;
-      put(this.artFrame, "opacity", String(q(e * out, 0.005)));
+      const opacity = q(e * out, 0.005);
+      this.artSeen = opacity > 0;
+      put(this.artFrame, "opacity", String(opacity));
       put(this.artFrame, "transform", `translate3d(${q(slide, 0.5)}px, 0, 0)`);
     }
   }
@@ -159,6 +175,7 @@ export class VoicesDom {
   }
 
   dispose(): void {
+    this.disposed = true;
     this.closePicker();
     this.root.removeEventListener("click", this.onClick);
     this.root.removeEventListener("keydown", this.onKey);
@@ -179,9 +196,12 @@ export class VoicesDom {
   }
 
   /**
-   * The art of one Aspirant: the small picture stands in at once (it is the chooser's own file,
-   * already in the cache) and the large one fades in over it when it has arrived. The large one is
-   * asked for only when its Aspirant is shown, so the ten do not all download together.
+   * The art of one Aspirant. The small picture stands in at once (it is the chooser's own file). The
+   * large one comes through the site's loader, as the same item as the section's loading list (a
+   * download that started there is not made twice, and one that stalls or drops is started again),
+   * is decoded, and only then shown: at once when the art is not on the screen (the way in waits for
+   * it, `artReady`), with a short fade over the small one when it is (a choice of Aspirant). The large
+   * one is asked for only when its Aspirant is shown, so the ten do not all download together.
    */
   private wantLarge(index: number): void {
     const fig = this.figs[index];
@@ -197,13 +217,23 @@ export class VoicesDom {
     big.alt = "";
     big.decoding = "async";
     big.dataset.size = "large";
-    const ready = () => {
-      big.dataset.ready = "1";
-    };
-    big.addEventListener("load", ready, { once: true });
-    big.src = asset(`/img/char/${slug}/splash.webp`);
     fig.append(small, big);
-    if (big.complete && big.naturalWidth > 0) ready();
+    const path = `/img/char/${slug}/splash.webp`;
+    void runPreload([imageItem(path, "Loading her splash art", 2)])
+      .then(async () => {
+        if (this.disposed) return;
+        big.src = asset(path);
+        await big.decode();
+        if (this.disposed) return;
+        big.dataset.ready = this.artSeen ? "1" : "now";
+        this.settled.add(index);
+      })
+      .catch(async () => {
+        // The large picture is gone for good (the loader logged it, or it will not decode): the small
+        // one stands in, and the way in does not wait for what nothing can fix.
+        await small.decode().catch(() => undefined);
+        this.settled.add(index);
+      });
   }
 
   // ---- events ----------------------------------------------------------------------------

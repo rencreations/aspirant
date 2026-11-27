@@ -15,7 +15,12 @@
 export type PlayEase = "inOut" | "out" | "inOutSoft" | "linear";
 
 export interface HomePlay {
-  /** Where the play fires: a fraction (0 to 1) of the section's own range. Down fires it forward. */
+  /**
+   * Where the play fires: a fraction (0 to 1) of the section's own range. Down fires it forward. The
+   * first play may be a clock play that fires in the section's lead (a negative `at`, no lower than the
+   * lead's start): the voices' way in fires where Selena's white has covered the screen, before the
+   * voices start. The lead then follows the scroll only below that threshold (`passthrough`).
+   */
   readonly at: number;
   /** The value of `local` before the play. The first play's is the value at the start of the section. */
   readonly from: number;
@@ -47,6 +52,15 @@ export interface HomePlay {
    * standing on an empty screen. It carries from a joint and from a zone that has no idle snap alike.
    */
   readonly auto?: number;
+  /**
+   * A clock play only: the threshold is a picture on the screen. Going down the play fires when the scene
+   * that is drawn (the smoothed scroll) has reached `at`, not only the real scroll, so it starts on a
+   * picture that is whole (the voices' way in starts when Selena's white has covered the screen, not a
+   * few frames before). Going up it plays back as soon as the real scroll is above `at` again, with no
+   * hysteresis, so the scene it plays back over is still that picture. The scene's lag behind the
+   * scroll is the hysteresis.
+   */
+  readonly drawn?: boolean;
 }
 
 /** The share of a play's length that its backward run takes when the play does not say. */
@@ -100,18 +114,35 @@ export function zoneValue(p: HomePlay, s: number): number {
 
 /**
  * Check a table of plays. Throws an error that names the section and the play, so a bad table fails
- * at startup (`layoutSections`) and not in the middle of a scroll.
+ * at startup (`layoutSections`) and not in the middle of a scroll. `floor` is the lowest `local` the
+ * scroll reaches while the section runs (the start of its lead, `floorOf`): only a first clock play may
+ * fire below 0, and only above it. Without it every threshold is in 0 to 1.
  */
-export function validatePlays(id: string, plays: readonly HomePlay[]): void {
+export function validatePlays(id: string, plays: readonly HomePlay[], floor = 0): void {
   const fail = (index: number, why: string): never => {
     throw new Error(`section ${id}: plays[${index}] ${why}`);
   };
   if (plays.length === 0) throw new Error(`section ${id}: plays is empty (leave it out instead)`);
+  const lowest = Math.min(0, floor);
   plays.forEach((p, i) => {
     for (const key of ["at", "from", "to", "seconds"] as const) {
       if (!Number.isFinite(p[key])) fail(i, `${key} is not a finite number (${String(p[key])})`);
     }
-    if (p.at < 0 || p.at > 1) fail(i, `at ${p.at} is outside 0 to 1 (a fraction of the section)`);
+    if (p.at < lowest || p.at > 1) {
+      fail(i, `at ${p.at} is outside ${lowest} to 1 (a fraction of the section)`);
+    }
+    if (p.at < 0 && (i > 0 || p.span !== undefined)) {
+      fail(i, `at ${p.at} is in the lead: only the first play, a clock play, may fire there`);
+    }
+    if (p.at < 0 && !(p.at > lowest)) {
+      fail(i, `at ${p.at} is at the start of the lead: it could never be crossed back`);
+    }
+    if (p.drawn !== undefined && p.span !== undefined) {
+      fail(
+        i,
+        "drawn is for a clock play (a play with no span): a zone follows the drawn scene already",
+      );
+    }
     if (!(p.seconds > 0)) fail(i, `seconds ${p.seconds} must be above 0`);
     if (p.seconds > MAX_PLAY_SECONDS) {
       fail(i, `seconds ${p.seconds} is over ${MAX_PLAY_SECONDS} (the scroll is held that long)`);
@@ -176,14 +207,26 @@ export function restingValueOf(plays: readonly HomePlay[], fired: number): numbe
   return plays[Math.min(fired, plays.length) - 1]!.to;
 }
 
-/** What `v` adds to the animated value outside the section: the scroll goes on linearly there. */
-export function passthrough(s: number): number {
-  if (s < 0) return s;
+/**
+ * What `v` adds to the animated value outside the section: the scroll goes on linearly there. `lead` is
+ * where the lead stops following the scroll: 0, or the first threshold when it lies in the lead (a play
+ * that has fired there stands on its station from its threshold on, it does not slide with the scroll).
+ */
+export function passthrough(s: number, lead = 0): number {
+  if (s < lead) return s - lead;
   if (s > 1) return s - 1;
   return 0;
 }
 
 const alwaysReady = (): boolean => true;
+
+/**
+ * How far down a clock play counts the scroll: the real scroll, or for a play on a picture (`drawn`)
+ * the lower of the real and the drawn one, so it fires going down only when the picture is whole.
+ */
+function reachOf(p: HomePlay, sRaw: number, sShown: number): number {
+  return p.drawn ? Math.min(sRaw, sShown) : sRaw;
+}
 
 /** The longest the hold of one play is kept, in wall-clock milliseconds. */
 export function playLimitMs(seconds: number): number {
@@ -227,6 +270,8 @@ export class PlayMachine {
   private readonly plays: readonly HomePlay[];
   private readonly backAt: Float64Array;
   private readonly restOutside: boolean;
+  /** Where the lead stops following the scroll: 0, or the first threshold when it is in the lead. */
+  private readonly lead: number;
   private readonly gate: () => boolean;
   /** A forward play is due (its threshold is reached) but the ready gate is closed. */
   private due = false;
@@ -249,7 +294,7 @@ export class PlayMachine {
     plays: readonly HomePlay[],
     options: PlayOptions,
   ) {
-    validatePlays(id, plays);
+    validatePlays(id, plays, options.floor ?? 0);
     this.plays = plays;
     const hyst = hystOf(options.screens);
     const floor = options.floor ?? -hyst;
@@ -257,7 +302,8 @@ export class PlayMachine {
     plays.forEach((p, i) => {
       // At most half the way down to the lowest reachable scroll, so the threshold can be crossed.
       const room = Math.max(0, p.at - floor) / 2;
-      this.backAt[i] = p.at - Math.min(hyst, room);
+      // A play on a picture plays back at its own threshold (the scene's lag is the hysteresis).
+      this.backAt[i] = p.drawn ? p.at : p.at - Math.min(hyst, room);
     });
     if (process.env.NODE_ENV === "development") {
       // A clock play right after a zone: the idle snap lands on the zone's end, which would be the play's threshold.
@@ -274,6 +320,7 @@ export class PlayMachine {
     }
     this.base = plays[0]!.from;
     this.restOutside = options.restOutside === true;
+    this.lead = Math.min(0, plays[0]!.at);
     this.gate = options.ready ?? alwaysReady;
   }
 
@@ -288,7 +335,7 @@ export class PlayMachine {
       const z = this.zoneBehind();
       v = z ? zoneValue(z, this.sShown) : this.resting;
     }
-    return this.restOutside ? v : v + passthrough(this.sShown);
+    return this.restOutside ? v : v + passthrough(this.sShown, this.lead);
   }
 
   /** The zone the machine stands in or just after (the play before the station), or null. */
@@ -448,7 +495,7 @@ export class PlayMachine {
       else break;
     }
     const next = this.idx < n ? this.plays[this.idx]! : null;
-    if (next && next.span === undefined && sRaw >= next.at) {
+    if (next && next.span === undefined && reachOf(next, sRaw, this.sShown) >= next.at) {
       // A clock play after a zone waits until the smoothed scroll has finished the zone, so the
       // scene never jumps from the middle of the zone to the play's start.
       const before = this.idx > 0 ? this.plays[this.idx - 1]! : null;

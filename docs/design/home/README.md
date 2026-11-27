@@ -25,6 +25,8 @@ The exit blends into the camera from `cameras.json`. Its crop follows the palm a
 
 ## Voices, Music and the lower scroll, 24 Nov 2026
 
+Update on 26 Nov 2026. In Selena's film, the doll hops from the drone to her palm. As Silverbolt approaches, the doll looks around, recoils and kicks. The poses and expressions follow the film in both scroll directions (`sections/selena/doll-beats.ts`). The Voicelines entrance starts once Selena's white wipe covers the screen. Scrolling back plays the entrance in reverse over the same white frame (`sections/voices/stations.ts`).
+
 - **Voicelines.** Guinevere opens the selector. Each of the ten portraits has its own framing. Eight language buttons play the selected character's lines. The small drone hovers to the right of the name.
 - **Music.** The two lists share a vinyl deck. The selected release uses the disc print from the Music room. A sleeve preview follows the pointer on a track. The title carries the release's available listening links. The backdrop and drone respond to the playing audio.
 - **Dance, shock and chase.** Music scrolls up to reveal Tetra already dancing on the ground. Silverbolt flies across with the doll in its mouth, Tetra is shocked and runs after it from behind (the kite was removed on 24 Nov 2026). Below the story, the doll leads Silverbolt and Tetra. Scroll controls travel in both scenes. Pausing holds their positions while their flight, dance and running cycles continue. Reversing turns the pair about the middle between them (the doll stays in front) and changes the facing of Silverbolt and Tetra.

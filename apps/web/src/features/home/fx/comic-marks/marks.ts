@@ -94,7 +94,7 @@ export class MarksActor implements Actor {
     // Build the program now, while the section is still being mounted: the first mark of the page
     // (a shock icon over the drone) must not wait for the driver to compile the shader.
     this.mesh.visible = true;
-    stage.renderer.compile(this.pass.scene, this.pass.camera);
+    void stage.renderer.compileAsync(this.pass.scene, this.pass.camera).catch(() => undefined);
     this.mesh.visible = false;
   }
 

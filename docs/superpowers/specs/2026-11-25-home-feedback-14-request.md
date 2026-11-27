@@ -26,3 +26,5 @@ A hard scroll left the page up to two screens ahead of the scene. The scene had 
 - The joint snap takes the direction of the visitor's last wheel or touch (`pushDir`), not of the page: the engine's own move of the page (putting it back to a gate) once made the page run on to the voices' way in.
 - The page is put back beside a held scene only in the passage (`TopSpeed.hold`), and a gate lets go after 0.8 s at most, whatever the wheel does.
 - Not done: a flick that starts within 0.3 screens of a gate passes it (the gate holds a flick, not a slow scroll); a finger on a phone went through the gate without a catch (nothing jittered, nothing stuck).
+
+**Later (25 Nov 2026, round fifteen).** The top speeds of this round were folded into one rule for the whole page, and the flick limiter, the held lead and the gates are gone: see `2026-11-25-home-about-feedback-15-request.md` and `docs/design/home/kernel-snap.md`, "The scene's top speed".

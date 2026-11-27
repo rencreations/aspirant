@@ -417,7 +417,7 @@ export class TetraModel {
   warm(renderer: WebGLRenderer): void {
     this.camera.aspect = this.width / this.height;
     this.camera.updateProjectionMatrix();
-    renderer.compile(this.scene, this.camera);
+    void renderer.compileAsync(this.scene, this.camera).catch(() => undefined);
     for (const t of this.textures) renderer.initTexture(t);
   }
 

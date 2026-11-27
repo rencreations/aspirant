@@ -10,7 +10,7 @@
  *    move round them, and the elbows and shoulders flex;
  *  - lives: a seeded behaviour (`idle.ts`) sits, looks round, fidgets, adjusts her seat and grip,
  *    nearly falls and recovers, and strains when the dragon shakes. Her face follows the behaviour
- *    (scared, relieved, determined: the doll's 24 expressions, never a bubble);
+ *    (scared, relieved, determined: the doll's 26 expressions, never a bubble);
  *  - looks at the pointer when it is near, otherwise ahead.
  *
  * Everything runs on the actor's own clock (frame time), never the scroll. Nothing is allocated in
@@ -64,6 +64,11 @@ export interface RideOptions {
   seatOffset?: readonly [number, number, number];
   /** How much of the seat's tilt she holds against (0 leans with it, 1 stays upright). Default `UPRIGHT`. */
   upright?: number;
+  /**
+   * The ride pose and the hands' hold come in over `RELEASE_FADE` instead of at once: for a doll that
+   * was drawn in another pose a frame ago and is handed back to the seat.
+   */
+  blendIn?: boolean;
   /** A host whose grips are hand targets a controller moves: no walk toward the grips, no spread rule, no slips. */
   free?: boolean;
 }
@@ -175,6 +180,8 @@ export class Rider {
   seat: Object3D | null = null;
   /** 1 while seated, then down to 0 over `RELEASE_FADE` after `stop`. The ride layers, the ride pose and the IK are scaled by it. */
   fade = 0;
+  /** How much of the ride pose and the hold has come in since `start` (1 at once without `blendIn`). */
+  poseIn = 1;
   readonly body: RideBody;
   /** The behaviour's cue this frame (a probe reads it). */
   get cue(): Cue {
@@ -205,6 +212,16 @@ export class Rider {
   private behaviour = new RideBehaviour(1);
   private gripL: Object3D | null = null;
   private gripR: Object3D | null = null;
+  /**
+   * Where the grips were in her own frame when she left the seat: while the ride fades out the hands
+   * ease off from there. The grips themselves stay in the seat's world, which is no longer hers (a
+   * section may put her in another scene at once, Selena's film), so reaching for them flung her arms.
+   */
+  private readonly leftL = new Vector3();
+  private readonly leftR = new Vector3();
+  private leftOn = false;
+  /** Handed back to the seat: the counter turn starts where it would rest, not from upright. */
+  private upAtRest = false;
   private headPoint: Object3D | null = null;
   private lost = false;
   private lostAt = 0;
@@ -251,11 +268,24 @@ export class Rider {
     this.shaken = 0;
     this.violence = 0;
     this.fade = 1;
+    this.poseIn = opts.blendIn ? 0 : 1;
+    this.upAtRest = opts.blendIn ?? false;
     this.grip = 1;
   }
 
   /** She leaves the seat: the layers fade out over `RELEASE_FADE`. */
   stop(): void {
+    const frame = this.host.frame();
+    frame.updateWorldMatrix(true, false);
+    _m.copy(frame.matrixWorld).invert();
+    this.leftOn = false;
+    if (this.gripL && this.gripR) {
+      this.gripL.updateWorldMatrix(true, false);
+      this.gripR.updateWorldMatrix(true, false);
+      this.gripL.getWorldPosition(this.leftL).applyMatrix4(_m);
+      this.gripR.getWorldPosition(this.leftR).applyMatrix4(_m);
+      this.leftOn = true;
+    }
     this.seat = null;
     this.look = null;
     this.face = null;
@@ -293,6 +323,7 @@ export class Rider {
       else this.counter.identity();
       return;
     }
+    this.poseIn = Math.min(1, this.poseIn + dt / RELEASE_FADE);
     const seat = this.seat;
     seat.updateWorldMatrix(true, false);
     seat.getWorldPosition(_p);
@@ -346,6 +377,8 @@ export class Rider {
 
   /** The counter turn that keeps her upright on a seat that pitches in the screen plane. */
   private holdUp(dt: number, tilt: number): void {
+    if (Number.isFinite(tilt) && this.upAtRest) this.upright.reset(-this.uprightShare * tilt);
+    this.upAtRest = false;
     if (Number.isFinite(tilt)) this.upright.step(-this.uprightShare * tilt, dt);
     // The camera's axis, in the seat's frame: the turn is about it.
     _m.copy(this.seat?.matrixWorld ?? _m).invert();
@@ -511,19 +544,51 @@ export class Rider {
 
   /** Hold the grips: bring each hand to its socket by the grip weight. Matrices must be current. */
   solveArms(): void {
-    const w = this.grip * this.fade;
+    const w = this.grip * this.fade * this.poseIn;
     if (w <= 0.001) return;
     const g = this.gesture;
+    if (!this.seat) {
+      // Off the seat: the hands ease off from where they held, in her own frame.
+      if (!this.leftOn) return;
+      const frame = this.host.frame();
+      frame.updateWorldMatrix(true, false);
+      this.hold(
+        this.chainL,
+        null,
+        w * g.handL,
+        1,
+        _grip.copy(this.leftL).applyMatrix4(frame.matrixWorld),
+      );
+      this.hold(
+        this.chainR,
+        null,
+        w * g.handR,
+        -1,
+        _grip2.copy(this.leftR).applyMatrix4(frame.matrixWorld),
+      );
+      return;
+    }
     this.hold(this.chainL, this.gripL, w * g.handL, 1);
     this.hold(this.chainR, this.gripR, w * g.handR, -1);
   }
 
-  private hold(chain: ArmChain, grip: Object3D | null, w: number, side: 1 | -1): void {
-    if (!grip || w <= 0.001) return;
-    grip.updateWorldMatrix(true, false);
-    grip.getWorldPosition(_target);
+  private hold(
+    chain: ArmChain,
+    grip: Object3D | null,
+    w: number,
+    side: 1 | -1,
+    at: Vector3 | null = null,
+  ): void {
+    if (w <= 0.001) return;
+    if (at) {
+      _target.copy(at);
+    } else {
+      if (!grip) return;
+      grip.updateWorldMatrix(true, false);
+      grip.getWorldPosition(_target);
+    }
     // Hands wider apart than her arms can spread are brought toward the middle of the grips.
-    if (!this.free && this.gripL && this.gripR) {
+    if (!at && !this.free && this.gripL && this.gripR) {
       this.gripL.getWorldPosition(_grip);
       this.gripR.getWorldPosition(_grip2);
       _grip.add(_grip2).multiplyScalar(0.5);

@@ -40,10 +40,10 @@ const get = (f: Float32Array, name: (typeof FACE_FLOATS)[number]): number =>
   f[floatIndex(name)] ?? 0;
 
 describe("the expressions", () => {
-  it("are the 24 of the asset and match its numbers exactly (no drift from the source)", () => {
+  it("are the 26 of the asset and match its numbers exactly (no drift from the source)", () => {
     expect([...FACE_FLOATS]).toEqual(source.names);
     expect([...FACE_NAMES]).toEqual(Object.keys(source.presets));
-    expect(FACE_NAMES.length).toBe(24);
+    expect(FACE_NAMES.length).toBe(26);
     for (const name of FACE_NAMES) {
       const f = FACES[name];
       expect(f.length).toBe(FACE_ARRAY_LENGTH);

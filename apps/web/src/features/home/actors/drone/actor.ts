@@ -151,6 +151,8 @@ export class DroneActor implements Actor {
   private readonly lastTarget = { x: 0, y: 0 };
   private hasTarget = false;
   private snapNext = true;
+  /** How much the drone keeps to its place this frame instead of flying there (`hold`). */
+  private holdW = 0;
   private layerName: DroneLayer = "back";
   private baseFace: FaceName = "normal";
   private baseBlend = 1;
@@ -300,6 +302,15 @@ export class DroneActor implements Actor {
   place(p: DronePlace): void {
     placeToTarget(p, this.ctx.stage.width, this.target);
     this.hasTarget = true;
+  }
+
+  /**
+   * How much the drone keeps exactly to its place this frame, 0 (it flies there on its springs, the
+   * default) to 1 (it is there, and its flight is the place's own move): a scene that scrubs it with
+   * the scroll, so a fast scroll does not leave it behind. Ease it in and out; it lasts one frame.
+   */
+  hold(weight: number): void {
+    this.holdW = Math.max(0, Math.min(1, weight));
   }
 
   /** Put the drone on a place now, with no flight: a jump, an opening, a probe. */
@@ -679,7 +690,24 @@ export class DroneActor implements Actor {
       this.cap.a = CARRY_ACCEL * h;
       cap = this.cap;
     }
+    const x0 = this.follower.x.x;
+    const y0 = this.follower.y.x;
     stepFollower(this.follower, t, rest, h, dt, this.flight, this.attLimit, cap);
+    const held = this.holdW;
+    this.holdW = 0;
+    if (held > 0 && dt > 0) {
+      // Pulled onto the place: the velocity is the move it really made, so its attitude still follows
+      // the flight (nose first) and nothing jumps when the hold eases off again.
+      const f = this.follower;
+      const x = f.x.x + (t.x - f.x.x) * held;
+      const y = f.y.x + (t.y - f.y.x) * held;
+      f.x.v += ((x - x0) / dt - f.x.v) * held;
+      f.y.v += ((y - y0) / dt - f.y.v) * held;
+      f.x.x = x;
+      f.y.x = y;
+      f.size.x += (t.size - f.size.x) * held;
+      f.size.v *= 1 - held;
+    }
     flightOf(this.follower, h, this.flight);
     const fl = this.flight;
     const calm = 1 - fl.fast;

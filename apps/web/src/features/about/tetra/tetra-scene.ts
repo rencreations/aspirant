@@ -504,7 +504,7 @@ function assemble(
     tall: 320,
   });
   // Shaders and pictures go to the card now, not in the first frame of her entrance.
-  renderer.compile(scene, camera);
+  void renderer.compileAsync(scene, camera).catch(() => undefined);
   for (const t of textures) renderer.initTexture(t);
 
   const seconds = (name: ClipName) =>

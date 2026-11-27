@@ -458,7 +458,7 @@ export class DuoActor implements Actor {
     pass.scene.add(this.object);
     // The shaders and the picture go to the card now, not in the first frame of the entrance.
     this.object.visible = true;
-    ctx.stage.renderer.compile(pass.scene, pass.camera);
+    void ctx.stage.renderer.compileAsync(pass.scene, pass.camera).catch(() => undefined);
     for (const t of this.textures) ctx.stage.renderer.initTexture(t);
     this.object.visible = false;
 

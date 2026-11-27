@@ -37,8 +37,11 @@ export function layoutSections(defs: readonly HomeSection[]): Layout {
     if (def.dom === "flow" && index !== defs.length - 1) {
       throw new Error(`section ${def.id}: only the last section may be "flow"`);
     }
-    if (def.plays) validatePlays(def.id, def.plays);
     const start = at;
+    // A first clock play may fire in the lead (`floorOf`): no lower than the lead's start.
+    if (def.plays) {
+      validatePlays(def.id, def.plays, (Math.max(start - def.lead, 0) - start) / def.screens);
+    }
     at += def.screens;
     return {
       def,

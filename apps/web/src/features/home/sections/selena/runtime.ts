@@ -96,7 +96,9 @@ class SelenaRuntime implements SectionRuntime {
     const wipe = portrait ? smooth(seg(b.o, 0.1, 0.96)) : b.wipe;
     put(this.front, "opacity", f(1 - b.whiteOut));
     put(this.front, "transform", `translate3d(${f(100 * (1 - wipe))}%, 0, 0)`);
-    put(this.front, "visibility", wipe > 0 && b.whiteOut < 1 ? "inherit" : "hidden");
+    // Once the white under the canvas is whole it takes over (the same paper, and no actor is drawn
+    // then), so the front no longer covers the next section's art and drones as they come in.
+    put(this.front, "visibility", wipe > 0 && b.whiteOut < 1 && b.white < 1 ? "inherit" : "hidden");
   }
 
   private word(el: HTMLElement | null, u: number, index: number): void {

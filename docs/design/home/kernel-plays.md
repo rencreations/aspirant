@@ -18,17 +18,18 @@ plays: [
 ],
 ```
 
-| field     | meaning                                                                                                                                                                                                                                              |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `at`      | where the play fires: a fraction 0 to 1 of the section's own range (`local` units). Crossing it going down fires it.                                                                                                                                 |
-| `from`    | the value of `local` before the play. The first play's `from` is the value `update` gets at the section's start.                                                                                                                                     |
-| `to`      | the value after. The last play's `to` is the value at the section's end. It may be above 1 (see section 4).                                                                                                                                          |
-| `seconds` | the forward length. At most `MAX_PLAY_SECONDS` (10).                                                                                                                                                                                                 |
-| `ease`    | `inOut` (cubic, default), `out` (cubic), `inOutSoft` (sine), `linear`.                                                                                                                                                                               |
-| `back`    | the share of `seconds` the backward run takes. Default `PLAY_BACK` = 0.7.                                                                                                                                                                            |
-| `auto`    | a clock play only: it fires by itself. A visitor who lets go going down, short of it (within `AUTO_REACH` 0.6 screens) and inside a joint, is carried on past the threshold by the joint snap and the play starts (the voices' way in, 25 Nov 2026). |
+| field     | meaning                                                                                                                   |
+| --------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `at`      | Position in the section's local units. The first clock play can start in the lead, where `at` is negative.                |
+| `from`    | the value of `local` before the play. The first play's `from` is the value `update` gets at the section's start.          |
+| `to`      | the value after. The last play's `to` is the value at the section's end. It may be above 1 (see section 4).               |
+| `seconds` | the forward length. At most `MAX_PLAY_SECONDS` (10).                                                                      |
+| `ease`    | `inOut` (cubic, default), `out` (cubic), `inOutSoft` (sine), `linear`.                                                    |
+| `back`    | the share of `seconds` the backward run takes. Default `PLAY_BACK` = 0.7.                                                 |
+| `auto`    | Distance in screens from which a visitor who lets go can be carried to the clock play. Voicelines uses 0.075 screens.     |
+| `drawn`   | A forward clock play waits for the visible scene to reach its threshold. Scrolling back across the threshold reverses it. |
 
-The table is checked when the registry is laid out (`layoutSections`, so at startup and in every test that imports the registry), with errors like `section hero: plays[1] from 0.6 must equal the previous play's to 0.5 (the list is contiguous)`. Rules: not empty, `at` in 0..1 and strictly increasing, `from[i+1] === to[i]`, `from !== to`, `0 < seconds <= 10`, `0 < back <= 2`.
+The table is checked when the registry is laid out (`layoutSections`, so at startup and in every test that imports the registry), with errors like `section hero: plays[1] from 0.6 must equal the previous play's to 0.5 (the list is contiguous)`. Rules: not empty, `at` in 0..1 and strictly increasing (the first clock play may start in the lead), `from[i+1] === to[i]`, `from !== to`, `0 < seconds <= 10`, `0 < back <= 2`.
 
 Exports of `kernel/plays.ts`: `HomePlay`, `PlayEase`, `PlayMachine`, `validatePlays`, `easeValue`, `hystOf`, `passthrough`, `restingIndexAt`, `restingValueOf`, `playLimitMs`, and the constants `PLAY_BACK`, `HOLD_SLACK_MS`, `MAX_PLAY_SECONDS`.
 

@@ -101,7 +101,7 @@ export class TrailsActor implements Actor {
     this.pass.scene.add(this.mesh);
     // Build the program now, so the first ribbon does not wait for the driver.
     this.mesh.visible = true;
-    stage.renderer.compile(this.pass.scene, this.pass.camera);
+    void stage.renderer.compileAsync(this.pass.scene, this.pass.camera).catch(() => undefined);
     this.mesh.visible = false;
   }
 

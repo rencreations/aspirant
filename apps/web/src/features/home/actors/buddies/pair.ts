@@ -13,7 +13,7 @@
  * answers, the docked moments, the drone's float) is locked while the visitor scrolls and while a dance
  * drives them, with a tolerance before and after (`lock.ts`).
  */
-import { Object3D } from "three";
+import { Object3D, Quaternion, Vector3 } from "three";
 
 import type { Actor, FrameInfo } from "../../kernel/types";
 import type { ActorCtx } from "../shared/types";
@@ -21,6 +21,7 @@ import type { DollActor } from "../doll/actor";
 import type { FaceName as DollFace } from "../doll/face/presets";
 import { DOLL_SIZE } from "../doll/place";
 import type { DroneActor, DroneLayer } from "../drone/actor";
+import { SIZE_PER_HEIGHT } from "../drone/model";
 import type { DronePlace } from "../drone/coords";
 import { lensDistance } from "../drone/model";
 import type { TrickKind } from "../drone/tricks";
@@ -37,7 +38,7 @@ import {
 import { LifeScheduler } from "./life";
 import { createHands, stepHands, type Hands } from "./hands";
 import { closeLock, createLock, stepLock } from "./lock";
-import { createHeadFrame, headFrame, modelToStage, FACE_POINT } from "./seat";
+import { createHeadFrame, headFrame, modelToStage, FACE_POINT, type DroneDrawLike } from "./seat";
 import { dampAngle, setDamped, wrapPi, type Damped } from "./smooth";
 import { createTouchOut, Touch, type TouchOut } from "./touch";
 
@@ -58,6 +59,15 @@ export const DOLL_RATIO = 0.5;
  * bottom on the dome with nothing sunk into it. Looked at on thirteen attitudes (0.10 then 0.09).
  */
 const SEAT_OFFSET: readonly [number, number, number] = [0, 0.09, 0.5];
+/**
+ * Where her middle is above her hips while she sits (her standing middle is 0.85 of the file's 1.7 units
+ * and her hips 0.396), as a share of her drawn height: `seatView` gives a section her middle.
+ */
+const MIDDLE_OVER_HIPS = (0.85 - 0.396) / 1.7;
+const _seat = new Vector3();
+const _turn = new Quaternion();
+const _z = new Vector3(0, 0, 1);
+const _y = new Vector3(0, 1, 0);
 /** How much of the drone's roll she holds against. */
 const UPRIGHT = 0.5;
 /** A frame longer than this is taken as this long. */
@@ -77,6 +87,15 @@ const SPIN_MAX = 8;
 const PRESS_MIN = 0.5;
 /** The pair's own life and the cursor's pull count as on above this share of their weight. */
 const CURSOR_ON = 0.5;
+
+/** Where she sits on the screen (`BuddyPair.seatView`). */
+interface SeatView {
+  x: number;
+  y: number;
+  height: number;
+  roll: number;
+  readonly q: Quaternion;
+}
 
 export interface PairState {
   mode: PairMode;
@@ -101,6 +120,15 @@ export class BuddyPair implements Actor {
 
   private readonly ctx: ActorCtx;
   private readonly head = createHeadFrame();
+  private readonly viewHead = createHeadFrame();
+  /** The drone as it was drawn the frame before the last one, and the guess for this frame (`seatView`). */
+  private readonly drawnBefore = { x: 0, y: 0, size: 0, yaw: 0, pitch: 0, roll: 0, ok: false };
+  private readonly drawnGuess = { x: 0, y: 0, size: 0, yaw: 0, pitch: 0, roll: 0 };
+  /** What `seatFor` leaves out of where she sits, measured while she rides (`measureSeat`). */
+  private readonly seatFix = { x: 0, y: 0, q: new Quaternion(), ok: false };
+  private readonly seatWant: SeatView = { x: 0, y: 0, height: 0, roll: 0, q: new Quaternion() };
+  /** The turn she was last placed at on the seat (radians about its up). */
+  private dollYawNow = 0.2;
   private readonly touch = new Touch();
   private readonly life = new LifeScheduler(11);
   private readonly touchOut: TouchOut = createTouchOut();
@@ -365,6 +393,95 @@ export class BuddyPair implements Actor {
     };
   }
 
+  /**
+   * Where she sits on the screen for the drone as it was last drawn, whether she rides it now or not:
+   * her middle (stage pixels, y up), her drawn standing height, the roll of her up on the screen and her
+   * whole turn as the drone's lens sees it (`q`: a camera that looks down -Z sees her so).
+   * A section hands her from the seat to somewhere else with it (Selena's film): the first frame she
+   * is the section's, she is where the seat has her. Inside a section's update the drone has not moved
+   * yet this frame, so its last two draws are carried one frame on (a drone in flight moves smoothly).
+   */
+  seatView(out: SeatView): SeatView {
+    const last = this.drone.drawn;
+    const before = this.drawnBefore;
+    const dr = this.drawnGuess;
+    const on = before.ok ? 1 : 0;
+    dr.x = last.x + (last.x - before.x) * on;
+    dr.y = last.y + (last.y - before.y) * on;
+    dr.size = last.size + (last.size - before.size) * on;
+    dr.yaw = last.yaw + wrapPi(last.yaw - before.yaw) * on;
+    dr.pitch = last.pitch + (last.pitch - before.pitch) * on;
+    dr.roll = last.roll + (last.roll - before.roll) * on;
+    this.seatFor(dr, out);
+    // What the seat's arithmetic leaves out (her rider's own sway and the springs of her counter
+    // turn), as measured the last time she rode.
+    const fix = this.seatFix;
+    if (fix.ok) {
+      out.x += fix.x;
+      out.y += fix.y;
+      out.q.premultiply(fix.q);
+      _seat.set(0, 1, 0).applyQuaternion(out.q);
+      out.roll = Math.atan2(-_seat.x, _seat.y);
+    }
+    return out;
+  }
+
+  /** Where the seat has her for a drone drawn so (see `seatView`), with no measured correction. */
+  private seatFor(dr: DroneDrawLike, out: SeatView): SeatView {
+    const head = headFrame(dr, this.viewHead);
+    const drawn = (dr.size / SIZE_PER_HEIGHT) * DOLL_RATIO;
+    const o = this.seatOffset;
+    _seat.set(o[0] * drawn, o[1] * drawn, o[2] * drawn).applyQuaternion(head.q);
+    const x = head.x + _seat.x;
+    const y = head.y + _seat.y;
+    const z = head.z + _seat.z;
+    // Her turn: the seat's, with the turn the pair gave her on it, and the rider's counter turn about
+    // the lens's axis, which holds `UPRIGHT` of the seat's tilt on the screen (`ride.ts`, `holdUp`).
+    _seat.set(0, 1, 0).applyQuaternion(head.q);
+    const tilt = Math.atan2(-_seat.x, _seat.y);
+    out.q.setFromAxisAngle(_z, -UPRIGHT * tilt).multiply(head.q);
+    out.q.multiply(_turn.setFromAxisAngle(_y, this.dollYawNow));
+    // Through the drone's lens, which stands straight in front of the drone's middle. Her middle is
+    // above her hips along her own up, as the screen sees it.
+    const lens = lensDistance(this.ctx.stage.height);
+    const k = lens / Math.max(1, lens - z);
+    const cx = dr.x;
+    const cy = -dr.y;
+    _seat.set(0, 1, 0).applyQuaternion(out.q);
+    // She is fitted to be `drawn` pixels tall at her own depth (`fitScale`): no lens factor on the size.
+    out.height = drawn;
+    out.x = cx + (x - cx) * k + _seat.x * MIDDLE_OVER_HIPS * drawn;
+    out.y = cy + (y - cy) * k + _seat.y * MIDDLE_OVER_HIPS * drawn;
+    out.roll = Math.atan2(-_seat.x, _seat.y);
+    return out;
+  }
+
+  /**
+   * While she rides: where she really is drawn against where `seatFor` says, kept for `seatView`.
+   * Her root is her hips (the pair places her by them); her middle is above it along her own up.
+   */
+  private measureSeat(): void {
+    const root = this.doll.object;
+    const dr = this.drone.drawn;
+    const want = this.seatFor(dr, this.seatWant);
+    root.getWorldPosition(_seat);
+    root.getWorldQuaternion(this.seatFix.q);
+    const lens = lensDistance(this.ctx.stage.height);
+    const k = lens / Math.max(1, lens - _seat.z);
+    const cx = dr.x;
+    const cy = -dr.y;
+    const drawn = want.height;
+    const hx = cx + (_seat.x - cx) * k;
+    const hy = cy + (_seat.y - cy) * k;
+    _seat.set(0, 1, 0).applyQuaternion(this.seatFix.q);
+    const fix = this.seatFix;
+    fix.x = hx + _seat.x * MIDDLE_OVER_HIPS * drawn - want.x;
+    fix.y = hy + _seat.y * MIDDLE_OVER_HIPS * drawn - want.y;
+    // The turn that takes the seat's arithmetic to her real turn.
+    fix.q.multiply(_turn.copy(want.q).invert());
+    fix.ok = true;
+  }
+
   // ---------------------------------------------------------------- the frame
 
   update(frame: FrameInfo): void {
@@ -463,6 +580,15 @@ export class BuddyPair implements Actor {
     drone.flutter(Math.max(c.flutter, 0.45 * d));
     drone.layer(this.layerWant);
     this.layerWant = "back";
+    const was = drone.drawn;
+    const before = this.drawnBefore;
+    before.x = was.x;
+    before.y = was.y;
+    before.size = was.size;
+    before.yaw = was.yaw;
+    before.pitch = was.pitch;
+    before.roll = was.roll;
+    before.ok = !resumed;
     // The drone's own float is the pair's life (off in a dance); its answers to the visitor go with the lock.
     drone.gains(own, lockW);
     this.aimDrone(c);
@@ -543,12 +669,13 @@ export class BuddyPair implements Actor {
       this.seated = true;
     }
     doll.visible = true;
+    this.dollYawNow = 0.2 + c.dollYaw + 0.2 * lean;
     doll.place({
       x: 0,
       y: 0,
       z: 0,
       height: asked,
-      yaw: 0.2 + c.dollYaw + 0.2 * lean,
+      yaw: this.dollYawNow,
       pivot: "hips",
     });
     const g = doll.gesture;
@@ -569,6 +696,7 @@ export class BuddyPair implements Actor {
     this.aimDoll(c, drawn, g);
     this.setDollFace(c.dollFace ?? "smile", dt);
     doll.drive(frame);
+    this.measureSeat();
   }
 
   private setDollFace(want: DollFace, dt: number): void {

@@ -263,7 +263,7 @@ export function buildBunny(file: Object3D, scene: Scene): BunnyModel {
     warm: (renderer, scene, camera) => {
       actor.visible = true;
       try {
-        renderer.compile(scene, camera);
+        void renderer.compileAsync(scene, camera).catch(() => undefined);
         for (const t of textures) renderer.initTexture(t);
       } finally {
         actor.visible = false;

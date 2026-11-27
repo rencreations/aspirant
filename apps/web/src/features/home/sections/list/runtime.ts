@@ -1,5 +1,6 @@
 import { put } from "@/features/character/vexana/seams/scroll-kit";
 
+import type { MirrorShow } from "../../actors/shared/cast";
 import { ensureSelena, type SelenaActor } from "../../actors/selena";
 import { ensureSilverbolt, type SilverboltActor } from "../../actors/silverbolt";
 import { beatFor } from "../../kernel/beat";
@@ -34,6 +35,8 @@ const PRIME_FRAMES = 3;
 /** She is drawn once the strip has sat on that frame this long (seconds): the turn's landing is over. */
 const PRIME_AFTER = 0.5;
 const NO_WINDOW: Rect = { x: -64, y: -64, w: 0, h: 0 };
+/** The strip stands on her frame within this much of a frame: from there on she is drawn straight. */
+const AT_HER = 1e-4;
 /** The frame lifts this far (px) and grows this much while the pointer is on it. */
 const LIFT = 6;
 const LIFT_SCALE = 0.012;
@@ -131,6 +134,10 @@ class ListRuntime implements SectionRuntime {
   /** Her small picture beside the frame: its whole card, and the part of it the row shows. */
   private readonly thumbCard: Rect = { x: 0, y: 0, w: 0, h: 0 };
   private readonly thumbShown: Rect = { x: 0, y: 0, w: 0, h: 0 };
+  /** The windows of her one picture: the frame as it slides in, and her small picture. */
+  private readonly shows: MirrorShow[] = [];
+  private readonly showFrame: MirrorShow = { to: this.card, clip: this.clip };
+  private readonly showThumb: MirrorShow = { to: this.thumbCard, clip: this.thumbShown };
   private readonly place = { x: 0, y: 0, z: 0, height: 0 };
   private readonly removers: Array<() => void> = [];
 
@@ -513,7 +520,16 @@ class ListRuntime implements SectionRuntime {
     // Before the strip turns to her she is the small picture beside the frame, and it is her model too
     // (the owner, 24 Nov 2026): drawn in that card, in the part of it the row shows. Her small picture
     // of the markup stays hidden for as long as her model can be drawn there.
-    const preview = sl !== null && !peeks && e <= 0 && this.previewRect(b, g, vp, idx);
+    //
+    // The turn to her keeps it (the owner, 26 Nov 2026): while the frame slides in, her small picture
+    // slides out under the window's edge and both show her model, the same picture. She is drawn once,
+    // at the frame's size, and that one picture is laid in the frame and, made small, in her small
+    // picture (`Cast.mirrorOnce`), from the moment her small picture shows until the strip stands on
+    // her frame. Without her fitted cameras (they did not load) the small picture is drawn as before.
+    const fitted = sl?.hasFittedCameras() === true;
+    const beforeHer = sl !== null && e <= 0 && idx < SELENA_AT - AT_HER;
+    const preview = beforeHer && (fitted || !peeks) && this.previewRect(b, g, vp, idx);
+    const mirrored = fitted && beforeHer && (preview || peeks);
     const drawn = sl !== null && (peeks || e > 0 || preview);
     const poster = this.items[SELENA_AT]?.poster;
     put(poster, "opacity", sl && peeks ? "0" : "1");
@@ -564,6 +580,10 @@ class ListRuntime implements SectionRuntime {
     );
     put(this.panel, "visibility", rect.w > 1 && peeks ? "inherit" : "hidden");
     put(this.panel, "opacity", f(1 - seg(u, LIST_LAST, LIST_LAST + SKY_FADE)));
+    if (sl && mirrored) {
+      this.drawMirrored(sl, g, vp, slide, peeks, preview);
+      return;
+    }
     if (sl && preview) {
       this.drawPreview(sl, vp);
       return;
@@ -649,6 +669,45 @@ class ListRuntime implements SectionRuntime {
     shown.w = x1 - x0;
     shown.h = y1 - y0;
     return shown.w > 1 && shown.h > 1;
+  }
+
+  /**
+   * Her model drawn once, in the frame's lens, and shown in the frame as it slides in (`peeks`) and in
+   * her small picture (`thumb`). Before the turn the card waits just right of the frame, unseen: only
+   * her small picture shows it.
+   */
+  private drawMirrored(
+    sl: SelenaActor,
+    g: ListGeometry,
+    vp: { w: number; h: number },
+    slide: number,
+    peeks: boolean,
+    thumb: boolean,
+  ): void {
+    const shows = this.shows;
+    shows.length = 0;
+    // The frame's part that her card covers (`this.clip`, the window at the start of the growth).
+    if (peeks && this.clip.w > 0.5) shows.push(this.showFrame);
+    if (thumb) shows.push(this.showThumb);
+    if (shows.length === 0 || !this.selenaFrame) return;
+    const s = Math.min(slide, g.frame.w);
+    const card = this.card;
+    card.x = g.frame.x + s;
+    card.y = g.frame.y;
+    card.w = g.frame.w;
+    card.h = g.frame.h;
+    const a = this.selenaFrame;
+    const p = this.place;
+    p.x = a.x + s;
+    p.y = a.y;
+    p.z = 0;
+    p.height = a.height;
+    sl.visible = true;
+    sl.place(p);
+    sl.clipRectangle(null);
+    this.selenaStates(0, sl);
+    sl.frame(vp, { portrait: 1, rect: card, clip: null, mirror: shows });
+    if (this.dragon) showDragon(sl, this.dragon);
   }
 
   /** Her model in her small picture, in the lens of that card, with the dragon behind her. */

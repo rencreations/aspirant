@@ -28,12 +28,18 @@ import {
 
 import { PIXEL_DISTANCE } from "../../kernel/stage";
 import type { Actor, FrameInfo } from "../../kernel/types";
-import type { Cast } from "../shared/cast";
+import type { Cast, Mirror, MirrorShow } from "../shared/cast";
 import { INK_FLOOR_BODY, INK_TINTS, toonify, type ToonPick, type ToonSet } from "../shared/toon";
 import { FACE_LINE, FRINGE_COPIES, INK_FLOORS, SELENA_TUNE } from "./toon-look";
 import type { ActorCtx } from "../shared/types";
 
-import { type CameraData, frameCamera, sampleBakedCamera, type FrameOptions } from "./camera";
+import {
+  type CameraData,
+  frameCamera,
+  sampleBakedCamera,
+  smoothCameras,
+  type FrameOptions,
+} from "./camera";
 import { ANCHOR, BAKED, BONE, CLIP, POSE_FIT, REF_HEIGHT, type PoseFitName } from "./constants";
 import { IdleTouch } from "./touch";
 import { Face, MORPH_NAMES, type Expression } from "./face";
@@ -42,6 +48,7 @@ import { emptyGaze, gentleGaze } from "./look";
 import { Spring, approach, clamp } from "./motion";
 import { SpringBones, emptyEnv, type SpringEnv } from "./physics";
 import { ClipPlayer, type ClipName, type PlayOptions } from "./player";
+import { copyClipMix, mixJumped, newClipMix, type ClipMix } from "../shared/clip-mix";
 import { POINT, pointSpecs } from "./points";
 import { qaxis, qmul, qrotate } from "./quat";
 import { buildRig, standardOf, type Rig } from "./rig";
@@ -109,6 +116,12 @@ export interface R7Options {
   clip?: Rect | null;
   /** Draw the cast through the camera for the next frame (default true). */
   draw?: boolean;
+  /**
+   * Draw her picture once, at the size of `rect` alone, and show it in each of these windows
+   * (`Cast.mirrorOnce`; the list's frame and her small picture at once). Needs `rect`. Default none:
+   * she is drawn on the screen in `rect`, cut to `clip`. The windows are read in this frame's draw.
+   */
+  mirror?: readonly MirrorShow[] | null;
 }
 /** How big she is by default: a share of the viewport height. */
 const DEFAULT_HEIGHT = 0.8;
@@ -228,16 +241,22 @@ export class SelenaActor implements Actor {
       rect: null as Rect | null,
       clip: null as Rect | null,
       draw: true,
+      mirror: null,
     } as R7Options,
   };
+  /** What the cast is asked to mirror (reused every frame). */
+  private readonly mirrorAsk: Mirror = { w: 1, h: 1, shows: [] };
   /** The roots drawn through the fitted camera (hers, and Silverbolt's once `frameWith` added it). */
   private readonly framed: Object3D[] = [];
   /** Her height on the screen while a fitted camera is drawn (CSS pixels): the ink follows it. */
   private inkHeight = 0;
   private lastFrame = -10;
-  private lastClip: ClipName = CLIP.idle;
-  private lastClipTime = 0;
-  private lastScrubbed = false;
+  /** What was sampled this frame and the frame before, to tell a leap from a blend (`mixJumped`). */
+  private readonly mixNow: ClipMix = newClipMix();
+  private readonly mixPrev: ClipMix = newClipMix();
+  private mixReady = false;
+  private durTable: Record<string, number> | null = null;
+  private loopTable: Record<string, boolean> | null = null;
   private clock = 0;
   private filmDrawn = false;
 
@@ -291,7 +310,8 @@ export class SelenaActor implements Actor {
     r7: R7Data | null = null,
     skyTexture: Texture | null = null,
   ) {
-    this.cams = cams;
+    // The way out's camera eases into and out of every change of speed (see `smoothCameras`).
+    this.cams = smoothCameras(cams, 2);
     this.cast = cast;
     this.r7 = r7;
     const m = r7?.sky.fromFilm ?? [];
@@ -496,6 +516,24 @@ export class SelenaActor implements Actor {
     this.player.scrub(a, ta, b, tb, w);
   }
 
+  /** The length of each clip, by name (for `mixJumped`). */
+  private clipDur(): Record<string, number> {
+    if (!this.durTable) {
+      this.durTable = {};
+      for (const [name, info] of Object.entries(this.rig.info)) this.durTable[name] = info.duration;
+    }
+    return this.durTable;
+  }
+
+  /** Whether each clip loops, by name (for `mixJumped`). */
+  private clipLoop(): Record<string, boolean> {
+    if (!this.loopTable) {
+      this.loopTable = {};
+      for (const [name, info] of Object.entries(this.rig.info)) this.loopTable[name] = info.loop;
+    }
+    return this.loopTable;
+  }
+
   /** The machine had her and a section takes a clip: remember what she showed (see `carryW`). */
   private startCarry(): void {
     if (!this.driven) return;
@@ -680,14 +718,34 @@ export class SelenaActor implements Actor {
     cam.aspect = lens.aspect;
     cam.near = 0.04 * this.scale;
     cam.far = 120 * this.scale;
-    cam.setViewOffset(
-      lens.fullWidth,
-      lens.fullHeight,
-      lens.x - (options.shift ?? 0) * viewport.w,
-      lens.y,
-      lens.width,
-      lens.height,
-    );
+    const shiftPx = (options.shift ?? 0) * viewport.w;
+    const mirrored =
+      options.draw !== false && options.mirror && options.mirror.length > 0 && options.rect
+        ? options.rect
+        : null;
+    if (mirrored) {
+      // A mirrored picture is drawn at the size of `rect` alone: the lens is aimed at the part of
+      // the same frustum that falls in `rect`, so the picture is the one the screen would show there.
+      const sx = lens.width / Math.max(1, viewport.w);
+      const sy = lens.height / Math.max(1, viewport.h);
+      cam.setViewOffset(
+        lens.fullWidth,
+        lens.fullHeight,
+        lens.x - shiftPx + mirrored.x * sx,
+        lens.y + mirrored.y * sy,
+        mirrored.w * sx,
+        mirrored.h * sy,
+      );
+    } else {
+      cam.setViewOffset(
+        lens.fullWidth,
+        lens.fullHeight,
+        lens.x - shiftPx,
+        lens.y,
+        lens.width,
+        lens.height,
+      );
+    }
     cam.updateProjectionMatrix();
     cam.updateMatrixWorld(true);
     // How tall she is on the screen at the anchor's distance: the ink's width follows it.
@@ -698,8 +756,16 @@ export class SelenaActor implements Actor {
     if (options.draw !== false) {
       this.r7Base.makeRotationFromQuaternion(cam.quaternion);
       this.sky?.point(cam, this.r7Base, this.r7Film);
-      const cut = options.clip ?? options.rect;
-      if (k > 0 && cut) this.cast.clipOnce(cut);
+      if (mirrored && options.mirror) {
+        const m = this.mirrorAsk;
+        m.w = mirrored.w;
+        m.h = mirrored.h;
+        m.shows = options.mirror;
+        this.cast.mirrorOnce(m);
+      } else {
+        const cut = options.clip ?? options.rect;
+        if (k > 0 && cut) this.cast.clipOnce(cut);
+      }
       // Her and what she stands with are drawn through this lens; the pair is drawn after, in pixels.
       this.cast.setCamera(cam, this.framed);
       this.filmDrawn = true;
@@ -774,6 +840,7 @@ export class SelenaActor implements Actor {
     } else {
       ask.options.clip = null;
     }
+    ask.options.mirror = options.mirror ?? null;
   }
 
   private drawFrame(): void {
@@ -1042,19 +1109,25 @@ export class SelenaActor implements Actor {
       this.carryW = Math.max(0, k - dt / JUMP_FADE);
     }
 
-    // A scrub that jumps, or a clip switched while scrubbing, is not a swing.
-    const scrubbed = !this.player.playing();
-    if (scrubbed) {
-      const dur = rig.info[pp.a].duration;
-      let d = Math.abs(pp.ta - this.lastClipTime);
-      if (rig.info[pp.a].loop) d = Math.min(d, dur - d);
-      if (pp.a !== this.lastClip || d > SCRUB_JUMP) this.snap();
-    } else if (this.lastScrubbed) {
-      this.springs.snap();
+    // A scrub that leaps, or another clip come in whole while scrubbing, is not a swing: the springs
+    // start over. A switch that the carry or the player's own fade blends is a swing, and the hair and
+    // the head follow it (snapping them there popped the hair and the gaze at the start of the film).
+    const mix = this.mixNow;
+    mix.a = pp.a;
+    mix.ta = pp.ta;
+    mix.b = pp.b;
+    mix.tb = pp.tb;
+    mix.w = pp.w;
+    if (
+      !this.player.playing() &&
+      this.mixReady &&
+      this.carryW <= 0 &&
+      mixJumped(this.mixPrev, mix, this.clipDur(), this.clipLoop(), SCRUB_JUMP)
+    ) {
+      this.snap();
     }
-    this.lastScrubbed = scrubbed;
-    this.lastClip = pp.a;
-    this.lastClipTime = pp.ta;
+    copyClipMix(mix, this.mixPrev);
+    this.mixReady = true;
 
     work.clearTurns();
     this.addTurns(dt);

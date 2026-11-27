@@ -68,6 +68,51 @@ export function sampleBakedCamera(
   for (let k = 3; k < 7; k += 1) out[k] = out[k]! * len;
 }
 
+/**
+ * The keys of every moving clip, smoothed by a Gaussian `sigma` keys wide (the owner, 26 Nov 2026:
+ * every move of the home blends, the camera too). The recording's camera was keyed with straight
+ * tangents, so its speed changes from one key to the next (0.8 to 2.5 cm and 1.7 to 7.3 degrees a
+ * key on the way out) and its turn shivers by a few tenths of a degree at rest. Smoothed by two
+ * keys it eases into and out of every change: the hand-over and the bite move by under half a
+ * centimetre and half a degree, the fast turn at half a second lags by under four degrees. The
+ * window narrows at both ends, so the first and the last key stay where they are.
+ */
+export function smoothCameras(data: CameraData, sigma: number): CameraData {
+  const clips: Record<string, CameraClip> = {};
+  for (const [name, c] of Object.entries(data.clips)) {
+    clips[name] = c.static || sigma <= 0 ? c : { ...c, keys: smoothKeys(c.keys, c.stride, sigma) };
+  }
+  return { ...data, clips };
+}
+
+function smoothKeys(keys: readonly number[], stride: number, sigma: number): number[] {
+  const n = Math.floor(keys.length / stride);
+  const out = keys.slice();
+  const reach = Math.ceil(sigma * 2.5);
+  const acc = [0, 0, 0, 0, 0, 0, 0];
+  for (let i = 0; i < n; i += 1) {
+    const at = i * stride;
+    const r = Math.min(reach, i, n - 1 - i);
+    acc.fill(0);
+    let total = 0;
+    for (let j = -r; j <= r; j += 1) {
+      const w = Math.exp(-(j * j) / (2 * sigma * sigma));
+      const b = (i + j) * stride;
+      // The same rotation has two quaternions: take the one on the side of this key's.
+      let dot = 0;
+      for (let k = 3; k < 7; k += 1) dot += keys[at + k]! * keys[b + k]!;
+      const sign = dot < 0 ? -w : w;
+      for (let k = 0; k < 3; k += 1) acc[k] = acc[k]! + w * keys[b + k]!;
+      for (let k = 3; k < 7; k += 1) acc[k] = acc[k]! + sign * keys[b + k]!;
+      total += w;
+    }
+    for (let k = 0; k < 3; k += 1) out[at + k] = acc[k]! / total;
+    const len = Math.hypot(acc[3]!, acc[4]!, acc[5]!, acc[6]!);
+    for (let k = 3; k < 7; k += 1) out[at + k] = acc[k]! / len;
+  }
+  return out;
+}
+
 export interface FrameOptions {
   /** The share of the baked frame's height that the screen shows, from its bottom. Default 0.8. */
   band?: number;

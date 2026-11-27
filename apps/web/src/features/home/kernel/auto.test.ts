@@ -38,12 +38,15 @@ describe("a clock play that fires by itself", () => {
     const at = voices.start + voices.def.plays![0]!.at * voices.def.screens;
     expect(found.map((a) => a.at)).toContain(at);
     for (const a of found) expect(a.at).toBeLessThan(layout.placed[layout.placed.length - 1]!.end);
-    // The carry reaches back over the white only, never into the part of Selena's film that still shows her.
+    // The way in fires where Selena's white is whole (95.2 percent of her film), and the carry reaches back
+    // only over the last sliver of it, never into the part of her film that still shows her.
     const selena = layout.placed.find((p) => p.id === "selena")!;
     const film = selena.def.plays![1]!;
     const filmStart = selena.start + film.at * selena.def.screens;
     const wiped = filmStart + 0.952 * film.span! * selena.def.screens;
     const voicesAuto = found.find((a) => a.at === at)!;
-    expect(at - voicesAuto.reach).toBeGreaterThanOrEqual(wiped - 1e-3);
+    expect(at).toBeGreaterThanOrEqual(wiped - 1e-3);
+    expect(at - wiped).toBeLessThan(0.06);
+    expect(at - voicesAuto.reach).toBeGreaterThanOrEqual(wiped - 0.04);
   });
 });

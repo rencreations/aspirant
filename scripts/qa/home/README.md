@@ -48,4 +48,4 @@ Then open the sheet and read it. Looking at the frames yourself is the check: a 
 
 ## `voices-white.cjs`: stop in the white before the voices
 
-`node scripts/qa/home/voices-white.cjs http://localhost:3000/ 30.98` scrolls down through Selena's way out and stops in the white: the voices' way in must start by itself after a moment and play over about two seconds (the value of the play rises frame by frame), not land on its rest.
+`node scripts/qa/home/voices-white.cjs http://localhost:3000/ 30.80` scrolls down through Selena's way out and stops in the white: the voices' way in must start by itself after a moment and play over about two seconds (the value of the play rises frame by frame), not land on its rest.

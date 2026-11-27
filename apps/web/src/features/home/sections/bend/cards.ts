@@ -365,11 +365,14 @@ export class CardLayer {
       this.back.add(card.mesh);
     }
     // One program serves every card: make it now, so the first card that shows does not stall a frame.
+    // The section is built while the visitor scrolls, two screens early: the program is linked in the
+    // background (`compileAsync`, the parallel shader compile of the browser), so this frame does not
+    // wait for the driver either (a probe measured 200 to 500 ms here with the plain `compile`).
     const first = this.cards[0];
     if (first && !stage.lost) {
       first.mesh.visible = true;
       try {
-        stage.renderer.compile(backPass.scene, backPass.camera);
+        stage.renderer.compileAsync(backPass.scene, backPass.camera).catch(() => undefined);
       } finally {
         first.mesh.visible = false;
       }

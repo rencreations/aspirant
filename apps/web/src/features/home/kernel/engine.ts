@@ -413,7 +413,9 @@ export function startEngine(options: EngineOptions): Engine | null {
       const wall = performance.now();
       const lastReal = realRaw;
       realRaw = frozen ? frozenS : screensOf(window.scrollY, unit);
-      if (Math.abs(realRaw - lastReal) > 1e-4 && !pulledNow) movedAt = wall;
+      // `lastReal` is where the engine left the page (put back, when it was), so any move from it is the
+      // page's own: a wheel's glide or a finger's fling, which may go on for seconds after the last touch.
+      if (Math.abs(realRaw - lastReal) * unit > 0.5) movedAt = wall;
       const dt = frozen ? 0 : f.dt;
       // Frozen time stands still too, so idle motion does not drift in a frame sheet.
       if (!frozen) heldTime = f.time;

@@ -290,7 +290,7 @@ export class FilmActor implements Actor {
     this.pass = new FilmPass(this);
     this.removePass = stage.addPass(this.pass);
     this.removeHit = ctx.pointer.add(new FilmHit(this));
-    stage.renderer.compile(this.scene, this.camera);
+    void stage.renderer.compileAsync(this.scene, this.camera).catch(() => undefined);
     // The trailer loads as soon as the actor exists (its list waits for it); the previews behind it.
     for (const v of this.videos) v.start();
   }

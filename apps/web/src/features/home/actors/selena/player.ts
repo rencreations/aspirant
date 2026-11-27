@@ -197,19 +197,24 @@ export class ClipPlayer {
   }
 
   private start(seg: Segment): void {
+    let resume = -1;
     if (this.scrubbed) {
-      // Leave a scrub: fade out of the pose that was shown.
-      this.from = {
-        clip: this.pose.a,
-        time: this.pose.ta,
-        loop: this.info[this.pose.a].loop,
-        speed: 0,
-      };
+      // Leave a scrub: fade out of the pose that was shown, the clip that has the most of a scrubbed
+      // blend (a blend at 1 shows its second clip only).
+      const p = this.pose;
+      const second = p.b !== null && p.w > 0.5;
+      const clip = second && p.b !== null ? p.b : p.a;
+      const time = second ? p.tb : p.ta;
+      this.from = { clip, time, loop: this.info[clip].loop, speed: 0 };
       this.scrubbed = false;
+      // The loop that was shown is the one asked for: it goes on from where it was, so the fade is
+      // between two equal poses and the phase of the loop does not jump.
+      if (clip === seg.clip && (seg.loop ?? this.info[seg.clip].loop)) resume = time;
     } else {
       this.from = { ...this.cur };
     }
     this.cur = this.running(seg);
+    if (resume >= 0) this.cur.time = resume;
     this.fadeT = 0;
     this.fadeDur = seg.fade ?? DEFAULT_FADE;
     if (!(this.fadeDur > 0)) this.from = null;

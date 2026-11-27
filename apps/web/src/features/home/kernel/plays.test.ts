@@ -714,3 +714,80 @@ describe("restOutside: the lead and the tail do not follow the scroll", () => {
     expect(m.value).toBeCloseTo(1.7, 9);
   });
 });
+
+describe("a clock play on a picture, in the lead (the voices' way in)", () => {
+  // The section is 2 screens with a lead of 0.5: the floor is -0.25, the play fires at -0.2.
+  const LEAD: HomePlay[] = [
+    { at: -0.2, from: 0, to: 0.3, seconds: 1, drawn: true },
+    { at: 0.6, span: 0.4, from: 0.3, to: 1, seconds: 0.5 },
+  ];
+
+  it("is allowed in the lead only as the first clock play, above the lead's start", () => {
+    expect(() => {
+      validatePlays("v", LEAD, -0.25);
+    }).not.toThrow();
+    expect(() => {
+      validatePlays("v", LEAD);
+    }).toThrow(/plays\[0\] at -0.2 is outside 0 to 1/);
+    expect(() => {
+      validatePlays("v", [{ at: -0.25, from: 0, to: 1, seconds: 1 }], -0.25);
+    }).toThrow(/at the start of the lead/);
+    expect(() => {
+      validatePlays("v", [{ at: -0.1, span: 0.2, from: 0, to: 1, seconds: 1 }], -0.25);
+    }).toThrow(/only the first play, a clock play/);
+    expect(() => {
+      validatePlays("v", [{ at: 0.1, span: 0.2, from: 0, to: 1, seconds: 1, drawn: true }]);
+    }).toThrow(/drawn is for a clock play/);
+  });
+
+  it("fires going down only when the drawn scene has reached it too", () => {
+    const r = rig(LEAD, 2, -0.25);
+    r.at(-0.24);
+    r.m.jump(-0.24, -0.24);
+    r.state.sRaw = -0.19;
+    r.state.sShown = -0.21;
+    r.frame(1 / 60);
+    expect(r.m.active).toBe(false);
+    r.state.sShown = -0.2;
+    r.frame(1 / 60);
+    expect(r.m.active).toBe(true);
+    expect(r.m.direction).toBe(1);
+  });
+
+  it("stands on its station from its threshold on: the lead does not slide it", () => {
+    const r = rig(LEAD, 2, -0.25);
+    r.at(-0.15);
+    r.m.jump(-0.15, -0.15);
+    r.frame(1 / 60);
+    expect(r.m.value).toBeCloseTo(0.3, 9);
+    r.at(-0.01);
+    r.frame(1 / 60);
+    expect(r.m.value).toBeCloseTo(0.3, 9);
+  });
+
+  it("follows the scroll below its threshold only, and is 0 at it", () => {
+    const r = rig(LEAD, 2, -0.25);
+    r.at(-0.24);
+    r.m.jump(-0.24, -0.24);
+    r.frame(1 / 60);
+    expect(r.m.value).toBeCloseTo(-0.04, 9);
+    expect(passthrough(-0.24, -0.2)).toBeCloseTo(-0.04, 9);
+    expect(passthrough(-0.1, -0.2)).toBe(0);
+    expect(passthrough(-0.1)).toBeCloseTo(-0.1, 9);
+  });
+
+  it("plays back as soon as the real scroll is above its threshold, with no hysteresis", () => {
+    const r = rig(LEAD, 2, -0.25);
+    r.at(-0.1);
+    r.m.jump(-0.1, -0.1);
+    r.frame(1 / 60);
+    r.state.sRaw = -0.2001;
+    r.state.sShown = -0.19;
+    r.frame(1 / 60);
+    expect(r.m.active).toBe(true);
+    expect(r.m.direction).toBe(-1);
+    r.run(1);
+    expect(r.m.active).toBe(false);
+    expect(r.m.fired).toBe(0);
+  });
+});

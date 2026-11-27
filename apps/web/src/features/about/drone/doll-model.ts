@@ -269,7 +269,7 @@ export function buildDoll(file: Object3D): DollModel {
       const was = seat.visible;
       seat.visible = true;
       try {
-        renderer.compile(scene, camera);
+        void renderer.compileAsync(scene, camera).catch(() => undefined);
         if (map) renderer.initTexture(map);
       } finally {
         seat.visible = was;

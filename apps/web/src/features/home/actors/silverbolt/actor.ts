@@ -58,7 +58,6 @@ import { MarkBus, type MarkEvent, type MarkKind, type MarkListener } from "./mar
 import {
   clamp,
   clampDepth,
-  clipJumped,
   damp,
   facing,
   perspectiveFactor,
@@ -68,6 +67,7 @@ import {
   unprojectToDepth,
   type SpringState,
 } from "./math";
+import { copyClipMix, mixJumped, newClipMix, type ClipMix } from "../shared/clip-mix";
 import { dress, type SbMaterials } from "./materials";
 import { AnnoyMeter, Reactions } from "./mood";
 import { Pose, dancePose, flightPose, hoverPose } from "./pose";
@@ -148,6 +148,12 @@ export interface ClipOptions {
   blend?: { name: ClipName; time: number; weight: number };
 }
 
+/**
+ * A switch from one baked clip to another (or a jump of the clip's time) between two frames is a cross
+ * fade from the pose that was shown, this long, so the dragon never pops when the clip it is given
+ * changes (Selena's state machine starts the next clip, the room hands over to the film).
+ */
+const CARRY_FADE = 0.2;
 /** The most the tail's tip may be dragged away from where the animation has it, as a share of its length. */
 const DRAG: DragOptions = { maxPull: 0.42 };
 const DRAG_OMEGA = 20;
@@ -346,7 +352,20 @@ export class SilverboltActor implements Actor {
   private velX = 0;
   private velY = 0;
   private prevClip: ClipName | null = null;
-  private prevClipTime = 0;
+  /** The clips sampled this frame and the frame before, to tell a switch (`mixJumped`). */
+  private readonly mixNow: ClipMix = newClipMix();
+  private readonly mixPrev: ClipMix = newClipMix();
+  private mixReady = false;
+  /** The base pose of the frame before (bone positions, turns, scales) and how much of it still shows. */
+  private carryP: Float32Array | null = null;
+  private carryQ: Float32Array | null = null;
+  private carryS: Float32Array | null = null;
+  private carryW = 0;
+  /** This frame's eased share of the carried pose (0 when nothing is carried). */
+  private carryK = 0;
+  /** The head's lift the frame before, and the one the carry fades from. */
+  private lastLift = 0;
+  private carryLift = 0;
   private flyPhase = 0;
   private flyT: number | null = null;
   private dancePhase = 0;
@@ -798,23 +817,34 @@ export class SilverboltActor implements Actor {
     this.prevYaw = pl.yaw;
     this.prevPitch = pl.pitch;
     jumped = jumped || turned > 0.5;
-    // A clip that was scrubbed to another place (or another clip, or none) moved every bone at once.
+    // A clip that was scrubbed to another place, or another clip, moved every bone at once. Between two
+    // frames that follow each other it is a cross fade from the pose that was shown (the carry): the
+    // tail and the lean go on as they were. After a gap or a jump of the place it is a jump. A clip
+    // given up for the procedural pose (fly, dance) is a jump too, as before.
     if (want.clip) {
-      jumped =
-        jumped ||
-        this.prevClip !== want.clipName ||
-        clipJumped(
-          this.prevClipTime,
-          want.clipTime,
-          CLIP_DURATION[want.clipName],
-          CLIP_LOOPS[want.clipName],
-        );
+      const mix = this.mixNow;
+      mix.a = want.clipName;
+      mix.ta = want.clipTime;
+      mix.b = want.blend ? want.blendName : null;
+      mix.tb = want.blend ? want.blendTime : 0;
+      mix.w = want.blend ? want.blendWeight : 0;
+      if (this.mixReady && mixJumped(this.mixPrev, mix, CLIP_DURATION, CLIP_LOOPS)) {
+        if (jumped || gap || this.snap) {
+          jumped = true;
+        } else {
+          this.carryW = 1;
+          this.carryLift = this.lastLift;
+        }
+      }
+      copyClipMix(mix, this.mixPrev);
+      this.mixReady = true;
       this.prevClip = want.clipName;
-      this.prevClipTime = want.clipTime;
     } else {
       jumped = jumped || this.prevClip !== null;
       this.prevClip = null;
+      this.mixReady = false;
     }
+    if (jumped || gap) this.carryW = 0;
     this.prevX = pl.x;
     this.prevY = pl.y;
     this.prevScale = scale;
@@ -990,6 +1020,9 @@ export class SilverboltActor implements Actor {
     if (want.clip) {
       this.playClip(want);
       if (!want.keepRoot) rig.restore(BONE.root);
+      this.carryBase(dt);
+    } else {
+      this.carryK = 0;
     }
     // The head in line with the body, under every turn that follows.
     this.straightenHead(want.straight, want);
@@ -1174,7 +1207,11 @@ export class SilverboltActor implements Actor {
   private straightenHead(weight: number, want: Want): void {
     const head = this.headBone;
     this.headBefore.copy(head.quaternion);
-    const angle = this.liftFor(want) * weight;
+    // The lift of the clip, faded from the one shown before a switch (each clip has its own).
+    let lift = this.liftFor(want);
+    if (this.carryK > 0) lift += (this.carryLift - lift) * this.carryK;
+    this.lastLift = lift;
+    const angle = lift * weight;
     straightTurn(this.headTurn, this.straightRest, angle);
     head.quaternion.premultiply(this.headTurn);
     uprightFix(this.seatFix, this.headBefore, this.headTurn);
@@ -1186,6 +1223,56 @@ export class SilverboltActor implements Actor {
     if (!h) return;
     this.rig.turnLocal(i, h.raise[0], h.raise[1], h.raise[2], raise);
     if (spread !== 0) this.rig.turnLocal(i, h.spread[0], h.spread[1], h.spread[2], spread);
+  }
+
+  /**
+   * The carry: the base pose of the frame before is laid over the clip's by an eased share that runs out
+   * in `CARRY_FADE`, then this frame's base pose is kept for the next switch. No allocation after the
+   * first call.
+   */
+  private carryBase(dt: number): void {
+    const bones = this.rig.bones;
+    const n = bones.length;
+    if (this.carryP?.length !== n * 3) {
+      this.carryP = new Float32Array(n * 3);
+      this.carryQ = new Float32Array(n * 4);
+      this.carryS = new Float32Array(n * 3);
+      this.carryW = 0;
+    }
+    const P = this.carryP;
+    const Q = this.carryQ!;
+    const S = this.carryS!;
+    const w = this.carryW;
+    this.carryK = w > 0 ? w * w * (3 - 2 * w) : 0;
+    const k = this.carryK;
+    for (let i = 0; i < n; i++) {
+      const b = bones[i]!;
+      if (k > 0) {
+        b.position.set(
+          b.position.x + (P[3 * i]! - b.position.x) * k,
+          b.position.y + (P[3 * i + 1]! - b.position.y) * k,
+          b.position.z + (P[3 * i + 2]! - b.position.z) * k,
+        );
+        quatT.set(Q[4 * i]!, Q[4 * i + 1]!, Q[4 * i + 2]!, Q[4 * i + 3]!);
+        b.quaternion.slerp(quatT, k);
+        b.scale.set(
+          b.scale.x + (S[3 * i]! - b.scale.x) * k,
+          b.scale.y + (S[3 * i + 1]! - b.scale.y) * k,
+          b.scale.z + (S[3 * i + 2]! - b.scale.z) * k,
+        );
+      }
+      P[3 * i] = b.position.x;
+      P[3 * i + 1] = b.position.y;
+      P[3 * i + 2] = b.position.z;
+      Q[4 * i] = b.quaternion.x;
+      Q[4 * i + 1] = b.quaternion.y;
+      Q[4 * i + 2] = b.quaternion.z;
+      Q[4 * i + 3] = b.quaternion.w;
+      S[3 * i] = b.scale.x;
+      S[3 * i + 1] = b.scale.y;
+      S[3 * i + 2] = b.scale.z;
+    }
+    this.carryW = Math.max(0, w - dt / CARRY_FADE);
   }
 
   /** Write the clip's pose (and a second clip blended in) onto the bones. */

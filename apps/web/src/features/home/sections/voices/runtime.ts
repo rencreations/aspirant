@@ -82,6 +82,15 @@ class VoicesRuntime implements SectionRuntime {
     };
   }
 
+  /**
+   * The ready gate of the way in: it does not start before the art of the Aspirant shown is decoded,
+   * so her picture comes in with the words and the drones, never after them. Until then the screen
+   * stays on Selena's white and the page is free.
+   */
+  ready(): boolean {
+    return this.dom.artReady();
+  }
+
   update(local: number, frame: FrameInfo): void {
     const t0 = performance.now();
     this.step(local, frame);
