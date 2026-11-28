@@ -29,8 +29,10 @@ export const SERIES = [
   },
 ] as const;
 
+export const FILM_STRIPS = ["Play the film", "TheMLabel", ...SERIES.map(({ name }) => name)];
+
 // Distances are screens of vertical travel after the ident has assembled.
 export const ROW_START = 3.5;
 export const PANEL_TRAVEL = 1.25;
 export const FILM_AT = ROW_START + SERIES.length * PANEL_TRAVEL;
-export const GALLERY_SCREENS = FILM_AT + 1.15;
+export const GALLERY_SCREENS = FILM_AT + 2.25;

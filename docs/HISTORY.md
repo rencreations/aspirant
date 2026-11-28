@@ -264,3 +264,5 @@ The owner asked for `/collection/models` to be made again from nothing (word for
 
 The footer handoff now waits until its cover is gone before About's drone crosses the title. After TheMLabel assembles, four posters and their wordmarks orbit the logo. The same panels settle into a horizontal row with each series' cast and story. The promotional reel plays muted at the end and opens in the site player. The hall of honor and skin story follow.
 On portrait screens the posters follow a wider orbit around a narrower caption so the words stay clear as the posters turn.
+
+The posters zoom slightly inside their frames on hover. The film arrives at the size of the Soul Vessels poster, then expands to the same window as the Aspirant 5.0 trailer. Both pages share the play button, rolling letters and animated bands. TheMLabel uses its own film title and series names.

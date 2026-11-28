@@ -18,7 +18,9 @@
  * under the canvas, so the drone (drawn in the canvas) passes in front of them, never behind
  * (round five, the owner). The two boxes are the same box.
  */
-:global(.js) :global([data-home]:not([data-gl="off"])) :is(.deck, .deckBelow) {
+:global(.js)
+  :is(:global([data-home]:not([data-gl="off"])), :global([data-series-film]))
+  :is(.deck, .deckBelow) {
   --deck-ink: #05070c;
   --deck-ice: #dff6ff;
   /* The marks of the bands stand on the light page (outside the picture): their pale fills are bluer. */

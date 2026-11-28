@@ -1,6 +1,9 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
+import { windowBox } from "../src/features/home/fx/video-plane/layout";
+import { TRAILER_FILM } from "../src/features/home/fx/video-plane/data";
+
 import { skipGate, url, watchErrors } from "./helpers";
 
 /**
@@ -414,8 +417,41 @@ test("TheMLabel carries the four series from orbit to the row and ends with its 
     await expect(card.getByRole("heading", { name, exact: true })).toHaveCount(1);
     await expect(card.locator("[data-series-copy]")).toHaveCSS("opacity", "1");
   }
-  await seek(10.4);
-  await expect(gallery.getByRole("button", { name: "Play Films" })).toBeEnabled();
+  const poster = gallery.locator("article").last().locator("img").first();
+  if (await page.evaluate(() => matchMedia("(hover: hover)").matches)) {
+    await poster.hover();
+    await expect(poster).toHaveCSS("transform", "matrix(1.045, 0, 0, 1.045, 0, 0)");
+    await page.mouse.move(0, 0);
+    await expect(poster).toHaveCSS("transform", "none");
+  }
+  const film = gallery.locator("[data-series-film]");
+  const crop = film.locator("[data-film-crop]");
+  const play = film.getByRole("button", { name: "Play Films" });
+  const size = await poster.boundingBox();
+  await seek(9.8);
+  await expect
+    .poll(async () => Math.abs((await crop.boundingBox())!.width - size!.width))
+    .toBeLessThan(1);
+  await expect
+    .poll(async () => Math.abs((await crop.boundingBox())!.height - size!.height))
+    .toBeLessThan(1);
+  await expect(play).toBeDisabled();
+  await seek(11.1);
+  const viewport = await gallery.boundingBox();
+  const box = windowBox(viewport!.width, viewport!.height, TRAILER_FILM.aspect);
+  await expect
+    .poll(async () => Math.abs((await crop.boundingBox())!.width - box.w))
+    .toBeLessThan(1);
+  await expect
+    .poll(async () => Math.abs((await crop.boundingBox())!.height - box.h))
+    .toBeLessThan(1);
+  await expect(play).toBeEnabled();
+  await expect(film.locator('[data-deck="word"]')).toHaveCount(2);
+  await expect(film.locator('[data-deck="strip"]')).toHaveCount(2);
+  await play.click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
   await seek(4.95);
   await expect(gallery.locator("[data-series-copy]").first()).toHaveCSS("opacity", "1");
   await expect(label.getByText("An entire series", { exact: true })).toHaveCount(1);

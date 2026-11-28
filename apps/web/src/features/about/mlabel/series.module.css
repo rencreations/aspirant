@@ -76,62 +76,42 @@
   line-height: 1.45;
   text-wrap: balance;
 }
+.poster {
+  height: 100%;
+  overflow: hidden;
+  pointer-events: auto;
+}
+@media (hover: hover) {
+  .poster .art {
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .poster:hover .art {
+    transform: scale(1.045);
+  }
+}
 .film {
-  background: #171514;
+  --text: #f3f1ee;
+  width: var(--sw);
+  aspect-ratio: var(--film-aspect);
   transform: translate(-600vw, -50%);
 }
-.play {
+.crop {
   position: absolute;
   top: 50%;
-  left: 50%;
-  display: flex;
-  align-items: center;
-  gap: 0.72em;
-  padding: 0.45em 0.95em 0.45em 0.45em;
-  border: 1px solid rgb(255 255 255 / 0.65);
-  border-radius: 4em;
-  color: white;
-  background: rgb(10 10 12 / 0.86);
-  font-size: clamp(1rem, 2.25vw, 2.15rem);
-  font-weight: 650;
-  line-height: 1;
-  white-space: nowrap;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  display: block;
+  padding: 0;
+  border: 0;
+  /* The vertical crop scales to widescreen. Both corner radii reach the home's 20px. */
+  border-radius: 20px / calc(20px * var(--film-aspect, 1.7778) * 9 / 16);
+  background: #171514;
+  transform: translateY(-50%);
+}
+.crop:enabled {
   pointer-events: auto;
   cursor: pointer;
-}
-.play:disabled {
-  pointer-events: none;
-}
-.disc {
-  position: relative;
-  overflow: hidden;
-  display: grid;
-  place-items: center;
-  width: 1.85em;
-  height: 1.85em;
-  border-radius: 50%;
-  background: #f3f1ee;
-  transition: transform 0.35s ease;
-}
-.disc::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: #ff742e;
-  transform: translateY(105%);
-  transition: transform 0.35s ease;
-}
-.play:is(:hover, :focus-visible) .disc::before {
-  transform: translateY(0);
-}
-.disc span {
-  position: relative;
-  margin-left: 0.12em;
-  width: 0;
-  height: 0;
-  border-block: 0.25em solid transparent;
-  border-left: 0.4em solid #101010;
 }
 :global(html:not(.js)) .gallery {
   position: relative;
@@ -148,18 +128,12 @@
   opacity: 1;
   transform: none;
 }
-:global(html:not(.js)) .play {
-  display: none;
-}
-.play:is(:hover, :focus-visible) .disc {
-  transform: scale(1.1);
-}
-.play:focus-visible {
-  outline: 3px solid #f14c02;
-  outline-offset: 5px;
+:global(html:not(.js)) .crop {
+  position: static;
+  transform: none;
 }
 @media (max-width: 44rem) {
-  .panel {
+  .panel[data-series] {
     width: min(82vw, 95svh);
   }
   .definition {
