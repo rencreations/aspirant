@@ -64,9 +64,9 @@ export function animateGallery(
       const arrival = ease(i * 0.095, 0.84 + i * 0.095, t);
       const angle = phase + (i * Math.PI) / 2 - (1 - arrival) * 0.97;
       const radius = 1 + (1 - arrival) * 0.68;
-      const x = Math.cos(angle) * w * (narrow ? 0.335 : 0.32) * radius;
+      const x = Math.cos(angle) * w * (narrow ? 0.345 : 0.32) * radius;
       const y = Math.sin(angle) * h * (narrow ? 0.29 : 0.305) * radius - h * 0.022;
-      const orbitScale = Math.min(w * (narrow ? 0.32 : 0.215), h * 0.36) / panel;
+      const orbitScale = Math.min(w * (narrow ? 0.29 : 0.215), h * 0.36) / panel;
       const focus = 1 - ease(0, 1, Math.abs(i - station));
       const scale = mix(orbitScale * mix(0.5, 1, arrival), mix(0.88, 1, focus), align);
       const tilt = Math.cos(angle) * 7 - 14 * (1 - arrival);

@@ -7,6 +7,7 @@
 }
 .definition {
   position: absolute;
+  z-index: 1;
   left: 50%;
   top: 55%;
   width: min(30ch, 60%);
@@ -162,8 +163,8 @@
     width: min(82vw, 95svh);
   }
   .definition {
-    max-width: min(19ch, 37vw);
-    top: 53%;
+    max-width: min(19ch, 34vw);
+    top: 50.5%;
   }
   .description {
     line-height: 1.4;

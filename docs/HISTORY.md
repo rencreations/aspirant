@@ -263,3 +263,4 @@ The owner asked for `/collection/models` to be made again from nothing (word for
 ## 2026-11-28: the About opening and TheMLabel series gallery
 
 The footer handoff now waits until its cover is gone before About's drone crosses the title. After TheMLabel assembles, four posters and their wordmarks orbit the logo. The same panels settle into a horizontal row with each series' cast and story. The promotional reel plays muted at the end and opens in the site player. The hall of honor and skin story follow.
+On portrait screens the posters follow a wider orbit around a narrower caption so the words stay clear as the posters turn.
