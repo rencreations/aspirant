@@ -436,6 +436,24 @@ test("the next page is one press, one key or one scroll away", async ({ page, ba
   await expect.poll(() => sitePath(page, baseURL), { timeout: 20_000 }).toBe("/about/");
 });
 
+test("scrolling out of the home footer plays the About title after the cover leaves", async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+  await page.goto(url("/"));
+  await homeOpen(page);
+  await page.evaluate(() => {
+    sessionStorage.removeItem("aspirants:intro");
+    window.scrollTo(0, document.documentElement.scrollHeight);
+  });
+  await expect(page).toHaveURL(/\/about\/?$/, { timeout: 30000 });
+  await expect(page.locator("[data-home-cover]")).toHaveCount(0, { timeout: 60000 });
+  await expect(page.locator("[data-about]")).toHaveAttribute("data-about-intro", "title");
+  await expect(page.locator("[data-about]")).toHaveAttribute("data-about-intro", "done", {
+    timeout: 20000,
+  });
+});
+
 test("scrolling most of the way down does not open About", async ({ page, baseURL }) => {
   await page.goto(url("/"));
   await homeOpen(page);

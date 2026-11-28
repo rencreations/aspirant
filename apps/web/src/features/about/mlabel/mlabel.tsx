@@ -1,4 +1,6 @@
 import { LAYER } from "../layout";
+import { libUrl } from "@/lib/library";
+import videos from "../../../../public/data/library/video-others.json";
 
 import { LabelContent } from "./content";
 import styles from "./mlabel.module.css";
@@ -13,6 +15,10 @@ import { Stage } from "./stage";
  * site's cursor shows only its ring here, without its warm light (`data-cursor-glow`).
  */
 export function MLabel() {
+  const film = videos.items.find(
+    (item) => item.id === "film-others-promotional-instagram-p-ddofqneekbd-001-3985145824040601309",
+  );
+  if (!film) throw new Error("The collection is missing TheMLabel's promotional film.");
   return (
     <section
       className={styles.label}
@@ -20,7 +26,15 @@ export function MLabel() {
       data-cursor-glow="off"
       style={{ zIndex: LAYER.cover }}
     >
-      <Stage />
+      <Stage
+        film={{
+          title: film.title,
+          poster: libUrl(film.video.poster),
+          sources: [
+            { label: `${film.video.h}p`, height: film.video.h, src: libUrl(film.video.src) },
+          ],
+        }}
+      />
       <LabelContent />
     </section>
   );

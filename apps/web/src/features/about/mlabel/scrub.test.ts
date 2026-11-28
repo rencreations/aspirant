@@ -8,7 +8,6 @@ import {
   passOf,
   restOf,
   riseKeys,
-  rollKeys,
   timeAt,
   transformOf,
   travelled,
@@ -83,18 +82,5 @@ describe("the drawn point", () => {
     const step = follow(0, 3, 3, 1 / 60) - 0;
     expect(step).toBeLessThan(0.6);
     expect(step).toBeGreaterThan(0);
-  });
-});
-
-describe("the odometer", () => {
-  it("stands on every cell in turn and ends on the last", () => {
-    const keys = rollKeys(1, 2, 11);
-    expect(keys[0]?.[1].y).toBe(0);
-    expect(keys.at(-1)?.[0]).toBe(2);
-    expect(keys.at(-1)?.[1].y).toBeCloseTo((-100 * 10) / 11);
-    // A digit holds before it rolls: two keys with the same cell for every step.
-    for (let k = 1; k < keys.length - 1; k += 2) {
-      expect(keys[k]?.[1].y).toBeCloseTo(keys[k - 1]?.[1].y ?? NaN);
-    }
   });
 });

@@ -33,6 +33,16 @@
 
 /* While the page shows through the M the stage lets the pointer through to it. Closed, it does
    not: the drone's button is under the black and must not answer there. */
+:global(html:not(.js)) .track,
+:global(html:not(.js)) .stage {
+  position: relative;
+  height: auto;
+  contain: none;
+  background: #000;
+}
+:global(html:not(.js)) .stage > [aria-hidden="true"] {
+  display: none;
+}
 .stage[data-covered="true"] {
   pointer-events: auto;
 }
@@ -245,62 +255,6 @@
   margin-inline: auto;
 }
 
-.eyebrow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.5rem;
-  align-items: center;
-  margin: 0 0 clamp(1.5rem, 4vh, 3rem);
-  color: var(--dim);
-}
-
-.eyebrow b {
-  font-weight: 500;
-  color: var(--orange);
-}
-
-/* 1. What it is: the official line, word by word, each word a plate that swings up. */
-.what {
-  margin: 0;
-  font-size: clamp(2.6rem, 9.2vw, 9.5rem);
-  perspective: 1200px;
-}
-
-.word {
-  display: inline-block;
-  margin-right: 0.22em;
-  transform-origin: 50% 100%;
-  transition:
-    transform 900ms var(--house),
-    opacity 500ms linear;
-  transition-delay: calc(var(--i) * 70ms);
-}
-
-.word[data-hot="true"] {
-  color: var(--orange);
-}
-
-:global(:root.js) [data-in="false"] .word {
-  opacity: 0;
-  transform: rotateX(-82deg) translate3d(0, 0.2em, 0);
-}
-
-.lead {
-  max-width: 34ch;
-  margin: clamp(2rem, 5vh, 3.5rem) 0 0;
-  font-size: clamp(1.35rem, 2.3vw, 2.2rem);
-  font-style: italic;
-  color: rgb(243 241 238 / 0.82);
-  transition:
-    transform 1000ms var(--house) 500ms,
-    opacity 700ms linear 500ms;
-}
-
-:global(:root.js) [data-in="false"] .lead {
-  opacity: 0;
-  transform: translate3d(0, 1.5rem, 0);
-}
-
 /* The parts drawn by the scroll ------------------------------------------------------------------
    Their moves are Web Animations set from the scroll (`use-scrub.ts`, `scenes.ts`): nothing here
    animates by itself. A mask is a box that stands still and clips; what is in it moves. */
@@ -388,221 +342,7 @@
   color: rgb(243 241 238 / 0.84);
 }
 
-/* 01. The system. */
-.built {
-  max-width: 30ch;
-  margin: clamp(0.9rem, 2.4vh, 1.75rem) 0 0;
-  font-size: clamp(1.45rem, 2.7vw, 2.8rem);
-  font-style: italic;
-  color: rgb(243 241 238 / 0.84);
-}
-
-.carries {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2.6fr);
-  gap: clamp(1rem, 2.5vh, 1.75rem) clamp(1.5rem, 4vw, 4rem);
-  margin-top: clamp(2.25rem, 7vh, 5rem);
-}
-
-.carries > .rule {
-  grid-column: 1 / -1;
-}
-
-.carry {
-  margin: 0;
-  font-size: clamp(1.1rem, 1.55vw, 1.55rem);
-  font-style: italic;
-  color: var(--dim);
-}
-
-.own {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.5rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.own li {
-  display: grid;
-  gap: 0.7rem;
-  align-content: start;
-}
-
-.ownNo {
-  color: var(--orange);
-}
-
-.ownName {
-  font-size: clamp(1.6rem, 2.7vw, 3rem);
-}
-
-/* 02. Collect: the words on one side, the count on the other. */
-.collect {
-  display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-  grid-template-areas:
-    "kick kick"
-    "text meter";
-  column-gap: clamp(2rem, 6vw, 7rem);
-  align-items: end;
-}
-
-.collect > .kicker {
-  grid-area: kick;
-}
-
-.collectText {
-  grid-area: text;
-}
-
-.unlock {
-  max-width: 24ch;
-  margin: clamp(1.25rem, 3.5vh, 2.25rem) 0 0;
-  font-size: clamp(1.35rem, 2.3vw, 2.4rem);
-  font-style: italic;
-  color: rgb(243 241 238 / 0.84);
-}
-
-/* The wipe: the box moves in from the left and the words in it the other way, so the words stand
-   still and only the edge travels. */
-.wipe {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
-  padding-right: 0.1em;
-}
-
-.wipeIn {
-  display: inline-block;
-}
-
-.meter {
-  grid-area: meter;
-  display: grid;
-  gap: clamp(0.8rem, 2vh, 1.25rem);
-}
-
-.meterLabel {
-  margin: 0;
-  color: var(--dim);
-}
-
-.count {
-  display: flex;
-  align-items: flex-end;
-  font-size: clamp(4.5rem, min(16vw, 26vh), 17rem);
-  font-variant-numeric: tabular-nums;
-}
-
-/* One wheel of the odometer: a window one digit high over a strip of digits. */
-.odo {
-  display: block;
-  height: 0.92em;
-  padding-right: 0.06em;
-  overflow: hidden;
-}
-
-.strip {
-  display: block;
-}
-
-.strip span {
-  display: block;
-  height: 0.92em;
-  line-height: 0.92em;
-}
-
-/* The tens stand against the ones, so a narrow 1 does not leave a gap in the middle of 10. */
-.strip[data-k="tens"] span {
-  text-align: right;
-}
-
-.of {
-  margin: 0 0 0.12em 0.18em;
-  font-size: 0.3em;
-  color: var(--dim);
-}
-
-/* Ten skins, ten ticks; the tenth is the logo's orange. */
-.ticks {
-  display: grid;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
-  gap: clamp(0.25rem, 0.5vw, 0.45rem);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.ticks li {
-  height: 3px;
-  overflow: hidden;
-  background: rgb(255 255 255 / 0.14);
-}
-
-.ticks i {
-  display: block;
-  height: 100%;
-  background: #f3f1ee;
-}
-
-.ticks li:last-child i {
-  background: var(--orange);
-}
-
-.done {
-  margin: 0;
-  color: var(--orange);
-}
-
-/* 03. The rewards: a list of four, each row drawn as it comes up. */
-.rewardsHead {
-  margin-bottom: clamp(2rem, 7vh, 4.5rem);
-}
-
-.rewards {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.reward {
-  position: relative;
-  display: grid;
-  grid-template-columns: clamp(3rem, 7vw, 7rem) minmax(0, 1.6fr) minmax(0, 1fr);
-  column-gap: clamp(1rem, 2.5vw, 2.5rem);
-  align-items: baseline;
-  padding: clamp(1.5rem, 4.5vh, 2.75rem) 0;
-}
-
-.reward > .rule {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-}
-
-.rewardNo {
-  color: var(--orange);
-}
-
-.rewardName {
-  margin: 0;
-  font-size: clamp(2.3rem, 5.6vw, 6.25rem);
-}
-
-.rewardLine {
-  max-width: 26ch;
-  margin: 0;
-  justify-self: end;
-  font-size: clamp(1.05rem, 1.45vw, 1.45rem);
-  font-style: italic;
-  text-align: right;
-  color: var(--dim);
-}
-
-/* 04. The hall of honor: a frame on the screen, the title in the middle of it. */
+/* The frame of the hall of honor. */
 .frame {
   position: absolute;
   inset: clamp(6.5rem, 17vh, 10rem) clamp(1rem, 7vw, 8rem) clamp(3rem, 9vh, 6rem);
@@ -857,33 +597,6 @@
   .kicker {
     margin-bottom: 0.75rem;
   }
-
-  .built {
-    margin-top: 0.4rem;
-    font-size: clamp(1.1rem, 5vh, 1.5rem);
-  }
-
-  .carries {
-    gap: 0.6rem 2rem;
-    margin-top: 1rem;
-  }
-
-  .own li {
-    gap: 0.3rem;
-  }
-
-  .count {
-    font-size: clamp(3.5rem, 24vh, 6rem);
-  }
-
-  .unlock {
-    margin-top: 0.6rem;
-    font-size: clamp(1.1rem, 5vh, 1.5rem);
-  }
-
-  .meter {
-    gap: 0.5rem;
-  }
 }
 
 /* A narrow screen: each part is laid out again, not shrunk. --------------------------------------- */
@@ -898,78 +611,14 @@
     font-size: clamp(2.6rem, 12.4vw, 4.5rem);
   }
 
-  .built {
-    font-size: clamp(1.3rem, 5.6vw, 1.7rem);
+  .hallTitle {
+    font-size: clamp(3rem, 16vw, 5rem);
   }
-
-  /* The three things a series carries stand one under the other. */
-  .carries {
-    grid-template-columns: minmax(0, 1fr);
-    margin-top: clamp(1.75rem, 5vh, 2.5rem);
-  }
-
-  .own {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.9rem;
-  }
-
-  .own li {
-    grid-template-columns: 2.5rem minmax(0, 1fr);
-    gap: 0;
-    align-items: baseline;
-  }
-
-  .ownName {
-    font-size: clamp(1.7rem, 7.6vw, 2.3rem);
-  }
-
-  /* The count comes first and large, the words under it. */
-  .collect {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas:
-      "kick"
-      "meter"
-      "text";
-    row-gap: clamp(1.75rem, 5vh, 2.75rem);
-    align-items: start;
-  }
-
-  .count {
-    font-size: clamp(6rem, 34vw, 9rem);
-  }
-
-  .unlock {
-    font-size: clamp(1.25rem, 5.4vw, 1.6rem);
-  }
-
-  /* A reward is its number and name on one line, its line under the name. */
-  .reward {
-    grid-template-columns: 2.5rem minmax(0, 1fr);
-    row-gap: 0.6rem;
-    padding: clamp(1.25rem, 3.5vh, 1.75rem) 0;
-  }
-
-  .rewardName {
-    font-size: clamp(2rem, 9.6vw, 3rem);
-  }
-
-  .rewardLine {
-    grid-column: 2;
-    justify-self: start;
-    font-size: clamp(1.05rem, 4.4vw, 1.25rem);
-    text-align: left;
-  }
-
   .say {
     font-size: clamp(1.6rem, 7.4vw, 2.2rem);
   }
-
   .frame {
     inset: clamp(5rem, 13vh, 6.5rem) 0.75rem clamp(1.5rem, 5vh, 2.5rem);
-  }
-
-  .hallTitle {
-    font-size: clamp(3rem, 16vw, 5rem);
   }
 
   .hallSay {

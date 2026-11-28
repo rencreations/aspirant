@@ -229,9 +229,10 @@ async function change(deps: HandoffDeps): Promise<void> {
     }
     deps.scrollTo(0, { immediate: true });
     window.scrollTo(0, 0);
-    window.dispatchEvent(new Event(REVEAL_EVENT));
     document.getElementById("main")?.focus({ preventScroll: true });
     await cover.hide();
+    cover.remove();
+    window.dispatchEvent(new Event(REVEAL_EVENT));
     release();
   } catch {
     release();

@@ -382,44 +382,43 @@ test("the drone has a place to stop, and the page ends in TheMLabel with no way 
   await expect(page.locator("[data-about]").getByText(/Not affiliated with/i)).toHaveCount(0);
 });
 
-test("TheMLabel tells what it is in type, drawn by the scroll, with the cursor's light out", async ({
+test("TheMLabel carries the four series from orbit to the row and ends with its film", async ({
   page,
 }) => {
   await open(page);
   const label = page.locator('[data-about-section="label"]');
-  const parts = ["what", "system", "collect", "rewards", "hall", "story", "end"];
-  for (const id of parts) await expect(label.locator(`[data-label-part="${id}"]`)).toHaveCount(1);
-  // Between the definition and the end there are no pictures: no splash art, no drawn perks.
-  for (const id of parts.slice(1, -1)) {
-    await expect(label.locator(`[data-label-part="${id}"]`).locator("img, video")).toHaveCount(0);
-  }
-  // The logo's scene has no wave and no light passing over it any more.
-  await expect(label.locator('[data-part="wave"], [data-part="beam"]')).toHaveCount(0);
+  const gallery = label.locator('[data-label-part="series"]');
+  await expect(gallery.locator("h3 img")).toHaveCount(4);
+  await expect(
+    label.locator(
+      '[data-label-part="system"], [data-label-part="collect"], [data-label-part="rewards"]',
+    ),
+  ).toHaveCount(0);
   await expect(label).toHaveAttribute("data-cursor-glow", "off");
-
-  // Scrolled to, a row of the rewards stands whole; scrolled past and back, it stands whole again.
-  const row = label.locator('[data-scene="reward"]').nth(1);
-  const name = row.locator('[data-k="name"]');
-  const whole = () =>
-    name.evaluate((el) => {
-      const box = el.getBoundingClientRect();
-      const mask = el.parentElement?.getBoundingClientRect();
-      if (!mask) return false;
-      return Math.abs(box.left - mask.left) < 2 && Number(getComputedStyle(el).opacity) > 0.99;
-    });
-  const centre = async () => {
-    await row.evaluate((el) => {
-      const box = el.getBoundingClientRect();
-      window.scrollTo(0, window.scrollY + box.top + box.height / 2 - window.innerHeight / 2);
-    });
+  const seek = async (screens: number) => {
+    await gallery.evaluate((el, s) => {
+      const track = el.parentElement!.parentElement!;
+      window.scrollTo(0, window.scrollY + track.getBoundingClientRect().top + s * el.clientHeight);
+    }, screens);
   };
-  await centre();
-  await expect.poll(whole, { timeout: 5_000 }).toBe(true);
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  await expect.poll(whole, { timeout: 5_000 }).toBe(false);
-  await centre();
-  await expect.poll(whole, { timeout: 5_000 }).toBe(true);
-  await expect(label.getByText("These rewards include")).toBeVisible();
+  await seek(2.65);
+  await expect(gallery.locator("[data-definition]")).toHaveCSS("opacity", "1");
+  for (const [i, name] of [
+    "The Aspirant",
+    "Nexus Sea",
+    "Kishin Densetsu",
+    "Soul Vessels",
+  ].entries()) {
+    await seek(4.95 + i * 1.25);
+    const card = gallery.locator("article").nth(i);
+    await expect(card.getByRole("heading", { name, exact: true })).toHaveCount(1);
+    await expect(card.locator("[data-series-copy]")).toHaveCSS("opacity", "1");
+  }
+  await seek(10.4);
+  await expect(gallery.getByRole("button", { name: "Play Films" })).toBeEnabled();
+  await seek(4.95);
+  await expect(gallery.locator("[data-series-copy]").first()).toHaveCSS("opacity", "1");
+  await expect(label.getByText("An entire series", { exact: true })).toHaveCount(1);
 });
 
 test("axe finds no serious or critical violation", async ({ page }) => {

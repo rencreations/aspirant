@@ -298,23 +298,9 @@ export const LABEL = {
   name: "TheMLabel",
   launched: "16 Sep 2026",
   /** Quoted from the official announcement. */
-  definition: "a dedicated gallery for MLBB's signature skin series",
+  definition: "A dedicated gallery for MLBB's signature skin series.",
   first: "The Aspirants is the first series to be featured.",
-  system: {
-    kicker: "The system",
-    title: ["An exclusive", "display system"],
-    line: "built for signature in-house skin series.",
-    carries: "Each series carries its own",
-    own: ["Original lore", "Character stories", "Art style"],
-  },
-  /** The three parts after the system, in page order. */
   parts: [
-    {
-      id: "collect",
-      kicker: "Collect",
-      title: ["Collect every skin", "in a series"],
-      line: "to unlock exclusive visual effects and special perks.",
-    },
     {
       id: "hall",
       kicker: "An entire series",
@@ -332,14 +318,6 @@ export const LABEL = {
       line: "Explore the lore behind each series, including",
       more: ["Past cinematic trailers", "Character design", "Comics", "and more"],
     },
-  ],
-  rewards: { kicker: "The rewards", line: "These rewards include" },
-  /** The four rewards of a whole set, each with where it shows. */
-  perks: [
-    { name: "Golden skin name", line: "In gold, on the loading screen." },
-    { name: "Animated Skin Tag", line: "A skin tag that moves." },
-    { name: "Collection Crest", line: "On your Profile Namecard." },
-    { name: "Exclusive poster", line: "In your Showcase, to show off your prized collection." },
   ],
 } as const;
 

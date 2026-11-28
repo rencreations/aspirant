@@ -153,20 +153,3 @@ export function drawKeys(inAt: number, outAt: number, dur = 0.5, outDur = dur): 
     [outAt + outDur, { x: 101 }],
   ];
 }
-
-/**
- * The keys of an odometer strip that rolls from cell 0 to cell `cells - 1`, one cell for each
- * step, between `from` and `to` (screens). A digit stands for the first `hold` of its step and
- * then rolls to the next with a tick, so a scroll that stops mostly finds whole digits.
- */
-export function rollKeys(from: number, to: number, cells: number, hold = 0.45): Key[] {
-  const steps = Math.max(1, cells - 1);
-  const step = (to - from) / steps;
-  const at = (k: number): Pose => ({ y: k === 0 ? 0 : (-100 * k) / cells });
-  const keys: Key[] = [[from, at(0)]];
-  for (let k = 1; k <= steps; k += 1) {
-    keys.push([from + step * (k - 1) + step * hold, at(k - 1), EASE.tick]);
-    keys.push([from + step * k, at(k)]);
-  }
-  return keys;
-}

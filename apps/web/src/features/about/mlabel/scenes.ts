@@ -3,12 +3,6 @@
  * of its moving elements (`data-k`) along its pass, in screens (see `scrub.ts`). Every part comes
  * in its own way and goes out its own way as it leaves:
  *
- *   system    held on the screen. Lines rise out of their masks, a rule draws across, the three
- *             things each series carries rise one after the other. They lift away, top first.
- *   collect   held on the screen. The scroll counts the skins of a series up to ten on an
- *             odometer, ten ticks fill with it, and at ten the reward line is wiped in.
- *   rewards   a list that scrolls. Each row draws its rule, its name slides in from the left
- *             through its mask and its line rises; leaving, the name runs on out to the right.
  *   hall      held on the screen. A frame comes in from the four corners of the screen and the
  *             four words of the title fly in from the sides (as the letters of the logo did).
  *             Leaving, the frame closes in on the words and they lift away.
@@ -19,7 +13,7 @@
  * starts only when the part is leaving: a held part goes out as it scrolls away, while the next
  * one comes up under it.
  */
-import { drawKeys, EASE, type Key, riseKeys, rollKeys } from "./scrub";
+import { drawKeys, EASE, type Key, riseKeys } from "./scrub";
 
 /** What a part's choreography is given. */
 interface SceneContext {
@@ -74,119 +68,6 @@ function lines(els: Element[], inAt: number, outAt: number, gap = 0.07): Track[]
  * away, so the screen is never left empty while the next part comes up under it.
  */
 const outOf = (len: number) => len - 0.06;
-
-const system: Scene = ({ root, len }) => {
-  // Everything stands from about 1.75 screens until the part lets go of the screen.
-  const out = outOf(len);
-  const tracks = [...kicker(root, 0.12, out), ...lines(all(root, "line"), 0.26, out + 0.03)];
-  const rule = one(root, "rule");
-  if (rule) tracks.push({ el: rule, keys: drawKeys(0.82, out + 0.12, 0.6, 0.45) });
-  const carry = one(root, "carry");
-  if (carry) tracks.push({ el: carry, keys: riseKeys(0.95, out + 0.16, 0.45, 0.34) });
-  const nos = all(root, "own-no");
-  all(root, "own").forEach((el, i) => {
-    const at = 1.02 + i * 0.13;
-    tracks.push({ el, keys: riseKeys(at, out + 0.2 + i * 0.05, 0.48, 0.34) });
-    const no = nos[i];
-    if (no) tracks.push({ el: no, keys: riseKeys(at + 0.04, out + 0.18 + i * 0.05, 0.36, 0.3) });
-  });
-  return tracks;
-};
-
-/** Where the count runs on the collect part's pass: from none to ten skins. */
-const COUNT = { from: 1, to: 2 } as const;
-
-const collect: Scene = ({ root, len }) => {
-  const out = outOf(len);
-  const tracks = [...kicker(root, 0.12, out), ...lines(all(root, "line"), 0.26, out)];
-  const label = one(root, "meter-label");
-  if (label) tracks.push({ el: label, keys: riseKeys(0.5, out + 0.06, 0.4, 0.3) });
-  const count = one(root, "count");
-  if (count) tracks.push({ el: count, keys: riseKeys(0.56, out + 0.1, 0.5, 0.36) });
-  const ones = one(root, "ones");
-  if (ones) tracks.push({ el: ones, keys: rollKeys(COUNT.from, COUNT.to, 11) });
-  const tens = one(root, "tens");
-  const step = (COUNT.to - COUNT.from) / 10;
-  if (tens) tracks.push({ el: tens, keys: rollKeys(COUNT.to - step, COUNT.to, 2) });
-  // A tick fills while its digit rolls in (the last 55% of its step), then leaves to the right.
-  all(root, "tick").forEach((el, i) => {
-    const at = COUNT.from + step * (i + 0.45);
-    tracks.push({
-      el,
-      keys: [
-        [at, { x: -101 }, EASE.out],
-        [at + step * 0.55, { x: 0 }],
-        [out + 0.12 + i * 0.012, { x: 0 }, EASE.inOut],
-        [out + 0.42 + i * 0.012, { x: 101 }],
-      ],
-    });
-  });
-  // The reward line is wiped in at ten: its mask comes in from the left while the words inside
-  // it go the other way, so the words stand still and the edge sweeps over them.
-  const wipe = one(root, "wipe");
-  const inner = one(root, "wipe-in");
-  const w0 = COUNT.to + 0.02;
-  if (wipe) {
-    tracks.push({
-      el: wipe,
-      keys: [
-        [w0, { x: -101 }, EASE.inOut],
-        [w0 + 0.4, { x: 0 }],
-        [out + 0.1, { x: 0 }, EASE.inOut],
-        [out + 0.46, { x: 101 }],
-      ],
-    });
-  }
-  if (inner) {
-    tracks.push({
-      el: inner,
-      keys: [
-        [w0, { x: 101 }, EASE.inOut],
-        [w0 + 0.4, { x: 0 }],
-        [out + 0.1, { x: 0 }, EASE.inOut],
-        [out + 0.46, { x: -101 }],
-      ],
-    });
-  }
-  const done = one(root, "done");
-  if (done) tracks.push({ el: done, keys: riseKeys(COUNT.to + 0.08, out + 0.08, 0.36, 0.3) });
-  return tracks;
-};
-
-const rewardsHead: Scene = ({ root, span }) => [
-  ...kicker(root, 0.1, span - 0.5),
-  ...lines(all(root, "line"), 0.18, span - 0.44),
-];
-
-/** A row of the rewards: whole by the time its middle reaches the middle of the screen. */
-const reward: Scene = ({ root, span }) => {
-  const tracks: Track[] = [];
-  const rule = one(root, "rule");
-  if (rule) tracks.push({ el: rule, keys: drawKeys(0.08, span - 0.3, 0.42, 0.28) });
-  const no = one(root, "no");
-  if (no) tracks.push({ el: no, keys: riseKeys(0.14, span - 0.28, 0.3, 0.24) });
-  const name = one(root, "name");
-  if (name) {
-    tracks.push({
-      el: name,
-      keys: [
-        [0.14, { x: -102 }, EASE.out],
-        [0.5, { x: 0 }],
-        [span - 0.3, { x: 0 }, EASE.in],
-        [span - 0.04, { x: 102 }],
-      ],
-    });
-  }
-  const say = one(root, "say");
-  if (say) tracks.push({ el: say, keys: riseKeys(0.2, span - 0.32, 0.32, 0.26) });
-  return tracks;
-};
-
-/** The closing rule under the list of rewards. */
-const rule: Scene = ({ root, span }) => {
-  const el = one(root, "rule");
-  return el ? [{ el, keys: drawKeys(0.08, span - 0.3, 0.42, 0.28) }] : [];
-};
 
 /** Which way each corner of the hall's frame lies from the middle. */
 const CORNERS: Record<string, readonly [number, number]> = {
@@ -310,11 +191,6 @@ const spot: Scene = ({ root, span }) => {
 
 /** Every part, by its `data-scene`. */
 export const SCENES = {
-  system,
-  collect,
-  "rewards-head": rewardsHead,
-  reward,
-  rule,
   hall,
   "story-head": storyHead,
   spot,

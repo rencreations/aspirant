@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import { useLenis } from "@/components/smooth-scroll";
+import type { PlayerVideo } from "@/components/video-player/player-overlay";
 import { lvh } from "@/features/character/vexana/seams/scroll-kit";
 import { isScrollKey, useScrollLock } from "@/features/character/vexana/seams/scroll-lock";
 import { useScrollSnap } from "@/features/character/vexana/seams/snap";
@@ -44,6 +45,8 @@ import {
   pickedClips,
 } from "./footage";
 import styles from "./mlabel.module.css";
+import { GALLERY_SCREENS } from "./series";
+import { SeriesGallery } from "./series-gallery";
 
 /** Screens of scroll the close is drawn over, and for which the finished logo then stands. */
 const CLOSE_SCREENS = 0.9;
@@ -179,8 +182,9 @@ function holdDown(at: () => number, jump: (y: number) => void): () => void {
  * playing the scene, scrubbing it with the scroll and holding it for a frame sheet (`seek`) are
  * the same animations at a time that is set.
  */
-export function Stage() {
+export function Stage({ film }: { film: PlayerVideo }) {
   const track = useRef<HTMLDivElement>(null);
+  const logo = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const sheet = useRef<SVGSVGElement>(null);
   const lenis = useLenis();
@@ -235,7 +239,7 @@ export function Stage() {
     if (!root || !svg) return;
 
     // The videos are drawn after the first pick, so they are looked up when they are needed.
-    const films = () => Array.from(root.querySelectorAll<HTMLVideoElement>("video"));
+    const films = () => Array.from(root.querySelectorAll<HTMLVideoElement>("[data-plate] video"));
     const introOff = (() => {
       try {
         return window.sessionStorage.getItem("aspirants:intro") === "off";
@@ -690,91 +694,96 @@ export function Stage() {
     if (video.currentTime < 0.01) video.currentTime = at;
   };
 
-  const vars = { "--close": CLOSE_SCREENS, "--runway": RUNWAY_SCREENS } as CSSProperties;
+  const vars = {
+    "--close": CLOSE_SCREENS,
+    "--runway": RUNWAY_SCREENS + GALLERY_SCREENS,
+  } as CSSProperties;
 
   return (
     <div ref={track} className={styles.track} style={vars}>
-      <div
-        ref={stage}
-        className={styles.stage}
-        data-mode="scroll"
-        data-on="false"
-        aria-hidden="true"
-      >
-        <svg
-          ref={sheet}
-          className={styles.sheet}
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          style={{ transformOrigin: `50% ${PIVOT * 100}%` }}
-        >
-          <path d={SHEET_PATH} fillRule="evenodd" fill="#000" />
-          <path d={M_OUTLINE} className={styles.rim} />
-        </svg>
-        <span className={styles.under} data-part="under-long" />
-        <span className={styles.under} data-part="under" />
+      <div ref={stage} className={styles.stage} data-mode="scroll" data-on="false">
+        <div aria-hidden="true">
+          <svg
+            ref={sheet}
+            className={styles.sheet}
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            style={{ transformOrigin: `50% ${PIVOT * 100}%` }}
+          >
+            <path d={SHEET_PATH} fillRule="evenodd" fill="#000" />
+            <path d={M_OUTLINE} className={styles.rim} />
+          </svg>
+          <span className={styles.under} data-part="under-long" />
+          <span className={styles.under} data-part="under" />
 
-        <div className={styles.plates}>
-          {PLATES.map((i) => {
-            const clip = clips[i];
-            return (
-              <div key={i} className={styles.land} data-plate={i}>
-                <div className={styles.dolly} data-part="dolly">
-                  <div className={styles.flip} data-part="flip">
-                    <span className={styles.edge} data-depth="2" style={{ clipPath: M_CLIP }} />
-                    <span className={styles.edge} data-depth="1" style={{ clipPath: M_CLIP }} />
-                    <div className={styles.face} style={{ clipPath: M_CLIP }} data-tone={i}>
-                      {clip ? (
-                        <>
-                          {/* eslint-disable-next-line @next/next/no-img-element -- the still under a plate's footage */}
-                          <img
-                            src={asset(clip.still)}
-                            alt=""
-                            width={480}
-                            height={436}
-                            decoding="async"
-                          />
-                          <video
-                            src={urls[i] ?? undefined}
-                            muted
-                            loop
-                            playsInline
-                            preload="auto"
-                            tabIndex={-1}
-                            onLoadedMetadata={(e) => {
-                              onMeta(i, e.currentTarget);
-                            }}
-                          />
-                        </>
-                      ) : null}
-                      <span className={styles.streak} data-part="streak" />
+          <div className={styles.plates}>
+            {PLATES.map((i) => {
+              const clip = clips[i];
+              return (
+                <div key={i} className={styles.land} data-plate={i}>
+                  <div className={styles.dolly} data-part="dolly">
+                    <div className={styles.flip} data-part="flip">
+                      <span className={styles.edge} data-depth="2" style={{ clipPath: M_CLIP }} />
+                      <span className={styles.edge} data-depth="1" style={{ clipPath: M_CLIP }} />
+                      <div className={styles.face} style={{ clipPath: M_CLIP }} data-tone={i}>
+                        {clip ? (
+                          <>
+                            {/* eslint-disable-next-line @next/next/no-img-element -- the still under a plate's footage */}
+                            <img
+                              src={asset(clip.still)}
+                              alt=""
+                              width={480}
+                              height={436}
+                              decoding="async"
+                            />
+                            <video
+                              src={urls[i] ?? undefined}
+                              muted
+                              loop
+                              playsInline
+                              preload="auto"
+                              tabIndex={-1}
+                              onLoadedMetadata={(e) => {
+                                onMeta(i, e.currentTarget);
+                              }}
+                            />
+                          </>
+                        ) : null}
+                        <span className={styles.streak} data-part="streak" />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
 
-        <div className={styles.logo}>
-          {LOGO_M ? <Slice box={LOGO_M} className={styles.logoM} part="logo-m" /> : null}
-          {SILVER.map((letter) =>
-            TRAIL.map((g) => (
-              <Slice
-                key={`${letter.id}-${g}`}
-                box={letter}
-                className={styles.letter}
-                part={`letter-${letter.id}-${g}`}
-              />
-            )),
-          )}
-        </div>
+          <div ref={logo} className={styles.logo}>
+            {LOGO_M ? <Slice box={LOGO_M} className={styles.logoM} part="logo-m" /> : null}
+            {SILVER.map((letter) =>
+              TRAIL.map((g) => (
+                <Slice
+                  key={`${letter.id}-${g}`}
+                  box={letter}
+                  className={styles.letter}
+                  part={`letter-${letter.id}-${g}`}
+                />
+              )),
+            )}
+          </div>
 
-        <div className={styles.wait}>
-          <span className={styles.waitLine}>
-            <span className={styles.waitFill} data-part="meter" />
-          </span>
+          <div className={styles.wait}>
+            <span className={styles.waitLine}>
+              <span className={styles.waitFill} data-part="meter" />
+            </span>
+          </div>
         </div>
+        <SeriesGallery
+          track={track}
+          logo={logo}
+          start={CLOSE_SCREENS + RUNWAY_SCREENS}
+          film={film}
+        />
       </div>
     </div>
   );

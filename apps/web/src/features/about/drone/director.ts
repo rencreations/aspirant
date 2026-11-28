@@ -1,6 +1,6 @@
 import type Lenis from "lenis";
 
-import type { PointerState } from "@/lib/hooks";
+import { REVEAL_EVENT, type PointerState } from "@/lib/hooks";
 import { useSiteStore } from "@/lib/stores";
 
 import { createBunny, stepBunny, type BunnyPose } from "../choreo/bunny";
@@ -484,9 +484,11 @@ export function createDirector(parts: DirectorParts): Director {
 
   /** The loading screen is gone, the tab is seen and the scene is ready (or will never be). */
   const curtain = document.querySelector<HTMLElement>('[data-overlay="transition"]');
+  const homeCover = document.querySelector("[data-home-cover]");
   const mayStart = () =>
     useSiteStore.getState().entered &&
     curtain?.dataset.active !== "true" &&
+    !homeCover?.isConnected &&
     !document.hidden &&
     engine !== "pending";
 
@@ -1057,6 +1059,7 @@ export function createDirector(parts: DirectorParts): Director {
 
   // What the opening waits for, held together: the gate, the curtain, the tab, the scene.
   const unsubscribe = useSiteStore.subscribe(tryStart);
+  window.addEventListener(REVEAL_EVENT, tryStart);
   const watcher = new MutationObserver(tryStart);
   if (curtain) watcher.observe(curtain, { attributes: true, attributeFilter: ["data-active"] });
   document.addEventListener("visibilitychange", onVisible);
@@ -1182,6 +1185,7 @@ export function createDirector(parts: DirectorParts): Director {
       releaseIntroHold();
       stop();
       unsubscribe();
+      window.removeEventListener(REVEAL_EVENT, tryStart);
       watcher.disconnect();
       resized.disconnect();
       document.removeEventListener("visibilitychange", onVisible);

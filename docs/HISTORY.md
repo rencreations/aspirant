@@ -259,3 +259,7 @@ The owner sent rounds twelve to fourteen of the home again with a long message f
 ## 2026-11-25: the 3D Models room, made again
 
 The owner asked for `/collection/models` to be made again from nothing (word for word in `docs/superpowers/specs/2026-11-25-models-room-request.md`): one thing on the stage at a time, the name and the Aspirant's title only, no zoom buttons, a camera that cannot get under a character, every character split into her body and her items, the companions as entries of their own, and Selena added: her In Game model with both forms and the change between them, and her Entrance with fourteen clips, the game's cameras fitted to the recordings, a timeline and a sticker over her bottom in the idle. The room is fifteen entries of one or more views, one GLB a view in the bucket under `models/v1/`, made by `scripts/library/models/` (three pipelines run by helpers in parallel, and `build.mjs`). The calls made for the owner are in `docs/superpowers/specs/2026-11-25-models-room-redesign.md`, how it works in `docs/design/collection-rooms.md`.
+
+## 2026-11-28: the About opening and TheMLabel series gallery
+
+The footer handoff now waits until its cover is gone before About's drone crosses the title. After TheMLabel assembles, four posters and their wordmarks orbit the logo. The same panels settle into a horizontal row with each series' cast and story. The promotional reel plays muted at the end and opens in the site player. The hall of honor and skin story follow.

@@ -171,10 +171,9 @@ describe("the words", () => {
     for (const line of STATEMENT_LINES) expect(line.length).toBeGreaterThan(0);
   });
 
-  it("keep TheMLabel in one word, with its four perks and three parts", () => {
+  it("keep TheMLabel in one word, followed by the hall and skin story", () => {
     expect(LABEL.name).toBe("TheMLabel");
-    expect(LABEL.perks).toHaveLength(4);
-    expect(LABEL.parts).toHaveLength(3);
+    expect(LABEL.parts.map((part) => part.id)).toEqual(["hall", "story"]);
   });
 });
 

@@ -12,6 +12,7 @@ import {
   START_POSTER,
 } from "./media";
 import { mlabelItems } from "./mlabel/footage";
+import { SERIES } from "./mlabel/series";
 
 /** The first phase's two pictures arrive a few screens down: they are waited for, the rest follow. */
 const FIRST_PICTURES = 2;
@@ -73,5 +74,12 @@ export function aboutItems(): PreloadItem[] {
     },
     // The footage of TheMLabel's close, at the very end of the page: in the background.
     ...mlabelItems(),
+    ...SERIES.flatMap(({ slug }) =>
+      [slug, `${slug}-logo`].map((name) => ({
+        ...imageItem(`/img/about/mlabel/series/${name}.webp`, "Loading the series gallery", 1),
+        deferred: true,
+        priority: 32,
+      })),
+    ),
   ];
 }
